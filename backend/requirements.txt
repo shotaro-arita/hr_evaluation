@@ -1,3 +1,9 @@
 asgiref==3.11.0
 Django==6.0
 sqlparse==0.5.5
+dj-database-url
+psycopg[binary]
+djangorestframework
+
+pytest
+pytest-django
