@@ -1,3 +1,4 @@
+import inject
 from rest_framework.exceptions import ValidationError
 
 from evaluations.domain.evaluation_sheet.entity import EvaluationSheet
@@ -22,6 +23,7 @@ from evaluations.domain.evaluation_assignment.repository import (
 
 
 class EvaluationSheetUsecase:
+    @inject.autoparams()
     def __init__(
         self,
         evaluation_sheet_repository: EvaluationSheetRepository,
