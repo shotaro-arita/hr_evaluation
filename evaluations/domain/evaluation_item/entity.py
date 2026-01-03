@@ -4,9 +4,6 @@ from enum import Enum
 from uuid import UUID
 
 
-from evaluations.domain.employee.entity import PositionEnum
-
-
 class EvaluationItemCategory(str, Enum):
     PERFORMANCE_RESULTS = "PERFORMANCE_RESULTS"
     ATTITUDE_SKILLS = "ATTITUDE_SKILLS"

@@ -13,13 +13,20 @@ class EvaluationSheetEmployeeIdDto:
 
 
 @dataclass(frozen=True)
-class EvaluationSheetEmployeeCreateDto:
+class EvaluationSheetCreateDto:
     employee_id: UUID
     period_id: UUID
 
 
 @dataclass(frozen=True)
-class EvaluationSheetEmployeeUpdateDto:
+class EvaluationSheetScoreDto:
+    evaluation_item_id: UUID
+    score: int | None
+
+
+@dataclass(frozen=True)
+class EvaluationSheetUpdateDto:
     uuid: UUID
     actor_employee_uuid: UUID
-    scores: dict[UUID, int]
+    sheet_scores: list[EvaluationSheetScoreDto]
+    is_temporary: bool

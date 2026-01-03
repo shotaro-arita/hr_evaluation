@@ -4,8 +4,8 @@ from evaluations.domain.evaluation_sheet.entity import EvaluationSheet
 from evaluations.usecase.evaluation_sheet.dto import (
     EvaluationSheetIdDto,
     EvaluationSheetEmployeeIdDto,
-    EvaluationSheetEmployeeCreateDto,
-    EvaluationSheetEmployeeUpdateDto,
+    EvaluationSheetCreateDto,
+    EvaluationSheetUpdateDto,
 )
 from evaluations.domain.evaluation_sheet.repository import EvaluationSheetRepository
 from evaluations.usecase.evaluation_sheet.query_service import (
@@ -52,20 +52,34 @@ class EvaluationSheetUsecase:
         )
         return evaluation_sheets
 
-    def create(self, dto: EvaluationSheetEmployeeCreateDto) -> EvaluationSheet:
+    def create(self, dto: EvaluationSheetCreateDto) -> EvaluationSheet:
         evaluation_sheet = self.evaluation_sheet_repository.get_by_employee_period(
             employee_id=dto.employee_id, period_id=dto.period_id
         )
         if evaluation_sheet:
             raise ValidationError("すでに評価シートは存在しています。")
 
+        employee = self.employee_repository.find_by_id(
+            id=evaluation_sheet.employee_uuid
+        )
+        if not employee:
+            raise ValidationError("評価対象の従業員が存在しません。")
+
+        evaluation_item_ids = set(
+            self.evaluation_item_position_relation_repository.find_item_ids_by_position(
+                employee.position
+            )
+        )
+
         evaluation_sheet = EvaluationSheet.initialize(
-            period_uuid=dto.period_id, employee_uuid=dto.employee_id
+            period_uuid=dto.period_id,
+            employee_uuid=dto.employee_id,
+            evaluation_item_ids=evaluation_item_ids,
         )
         evaluation_sheet = self.evaluation_sheet_repository.create(evaluation_sheet)
         return evaluation_sheet
 
-    def update_own(self, dto: EvaluationSheetEmployeeUpdateDto) -> EvaluationSheet:
+    def update_own(self, dto: EvaluationSheetUpdateDto) -> EvaluationSheet:
         evaluation_sheet = self.evaluation_sheet_repository.find_by_id(id=dto.uuid)
         if not evaluation_sheet:
             raise ValidationError("評価シートが存在しません。")
@@ -75,26 +89,21 @@ class EvaluationSheetUsecase:
             id=evaluation_sheet.employee_uuid
         )
         if not employee:
-            raise ValidationError("従業員が存在しません。")
+            raise ValidationError("評価対象の従業員が存在しません。")
 
-        evaluation_item_ids = set(
-            self.evaluation_item_position_relation_repository.find_item_ids_by_position(
-                employee.position
-            )
-        )
-        score_dict = {}
-        for item_uuid, score in dto.scores.items():
-            if item_uuid not in evaluation_item_ids:
-                raise ValidationError("対象外の評価項目です。")
-            score_dict[item_uuid] = score
-        evaluation_sheet = evaluation_sheet.update_own_score(score_dict)
+        score_dict = {
+            sheet_score.evaluation_item_id: sheet_score.score
+            for sheet_score in dto.sheet_scores
+        }
+        if dto.is_temporary:
+            evaluation_sheet = evaluation_sheet.save_temporary_manager_score(score_dict)
+        else:
+            evaluation_sheet = evaluation_sheet.complete_own_score(score_dict)
 
         evaluation_sheet = self.evaluation_sheet_repository.update(evaluation_sheet)
         return evaluation_sheet
 
-    def update_by_manager(
-        self, dto: EvaluationSheetEmployeeUpdateDto
-    ) -> EvaluationSheet:
+    def update_by_manager(self, dto: EvaluationSheetUpdateDto) -> EvaluationSheet:
         evaluation_sheet = self.evaluation_sheet_repository.find_by_id(id=dto.uuid)
         if not evaluation_sheet:
             raise ValidationError("評価シートが存在しません。")
@@ -115,17 +124,14 @@ class EvaluationSheetUsecase:
         if evaluation_assignment.manager_employee_uuid != dto.actor_employee_uuid:
             raise ValidationError("この従業員の評価者ではありません。")
 
-        evaluation_item_ids = set(
-            self.evaluation_item_position_relation_repository.find_item_ids_by_position(
-                employee.position
-            )
-        )
-        score_dict = {}
-        for item_uuid, score in dto.scores.items():
-            if item_uuid not in evaluation_item_ids:
-                raise ValidationError("対象外の評価項目です。")
-            score_dict[item_uuid] = score
-        evaluation_sheet = evaluation_sheet.update_manager_score(score_dict)
+        score_dict = {
+            sheet_score.evaluation_item_id: sheet_score.score
+            for sheet_score in dto.sheet_scores
+        }
+        if dto.is_temporary:
+            evaluation_sheet = evaluation_sheet.save_temporary_manager_score(score_dict)
+        else:
+            evaluation_sheet = evaluation_sheet.update_manager_score(score_dict)
 
         evaluation_sheet = self.evaluation_sheet_repository.update(evaluation_sheet)
         return evaluation_sheet

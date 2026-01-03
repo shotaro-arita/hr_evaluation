@@ -2,12 +2,29 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 
+from evaluations.domain.evaluation_item.entity import EvaluationItemCategory
 from evaluations.utils.pagination import PaginationQueryDto
 from uuid import UUID
 
 from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheetStatus,
 )
+
+
+@dataclass(frozen=True)
+class EvaluationItemRetrieveModel:
+    uuid: UUID
+    title: str
+    category: EvaluationItemCategory
+    description: str
+
+    criteria_1: str
+    criteria_2: str
+    criteria_3: str
+    criteria_4: str
+    criteria_5: str
+
+    score: int | None
 
 
 @dataclass(frozen=True)

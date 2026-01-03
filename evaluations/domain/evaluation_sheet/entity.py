@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from re import S
 from uuid import UUID, uuid4
 
 from rest_framework.exceptions import ValidationError
@@ -40,8 +39,8 @@ class EvaluationSheet:
     period_uuid: UUID
     employee_uuid: UUID
 
-    own_evaluation_score: dict[UUID, int]
-    manager_evaluation_score: dict[UUID, int]
+    own_scores: list["EvaluationSheetScore"]
+    manager_scores: list["EvaluationSheetScore"]
 
     status: EvaluationSheetStatus
 
@@ -50,17 +49,21 @@ class EvaluationSheet:
 
     @classmethod
     def initialize(
-        cls,
-        period_uuid: UUID,
-        employee_uuid: UUID,
+        cls, period_uuid: UUID, employee_uuid: UUID, evaluation_item_ids: list[UUID]
     ) -> "EvaluationSheet":
         uuid = uuid4()
+        own_scores = [
+            EvaluationSheetScore.init(item_uuid) for item_uuid in evaluation_item_ids
+        ]
+        manager_scores = [
+            EvaluationSheetScore.init(item_uuid) for item_uuid in evaluation_item_ids
+        ]
         return cls(
             uuid=uuid,
             period_uuid=period_uuid,
             employee_uuid=employee_uuid,
-            own_evaluation_score={},
-            manager_evaluation_score={},
+            own_scores=own_scores,
+            manager_scores=manager_scores,
             status=EvaluationSheetStatus.PENDING,
             created_at=None,
             updated_at=None,
@@ -71,21 +74,103 @@ class EvaluationSheet:
             raise ValidationError("更新者と評価シートの対象者が一致していません。")
         return self
 
-    def _validation_score(self, score: int) -> None:
-        if not 1 <= score <= 5:
-            raise ValidationError("スコアは1~5で入力してください。")
+    def _update_sheet_score_from_dict(
+        self,
+        sheet_scores: list["EvaluationSheetScore"],
+        score_dict: dict[UUID, int | None],
+        is_temporary: bool,
+    ) -> list["EvaluationSheetScore"]:
+        sheet_item_ids = set([s.evaluation_item_uuid for s in sheet_scores])
+        new_item_ids = set(score_dict.keys())
+        if sheet_item_ids != new_item_ids:
+            raise ValidationError("更新しようとしている評価項目が定義と一致しません。")
 
-    def update_own_score(
-        self, own_evaluation_score: dict[UUID, int]
+        new_scores = [
+            sheet_score.update_score(
+                score_dict[sheet_score.evaluation_item_uuid], is_temporary
+            )
+            for sheet_score in sheet_scores
+        ]
+        return new_scores
+
+    def save_temporary_own_score(
+        self, own_evaluation_score_dict: dict[UUID, int]
     ) -> "EvaluationSheet":
-        for score in own_evaluation_score.values():
-            self._validation_score(score)
-        object.__setattr__(self, "own_evaluation_score", own_evaluation_score)
+        # TODO 評価ステータスの遷移
+        new_scores = self._update_sheet_score_from_dict(
+            self.own_scores, own_evaluation_score_dict, True
+        )
+        object.__setattr__(self, "own_scores", new_scores)
+        object.__setattr__(self, "status", EvaluationSheetStatus.SELF_EVALUATION_DRAFT)
+        return self
+
+    def complete_own_score(
+        self, own_evaluation_score_dict: dict[UUID, int]
+    ) -> "EvaluationSheet":
+        new_scores = self._update_sheet_score_from_dict(
+            self.own_scores, own_evaluation_score_dict, False
+        )
+        object.__setattr__(self, "own_scores", new_scores)
+        object.__setattr__(self, "status", EvaluationSheetStatus.SELF_COMPLETED)
+        return self
+
+    def save_temporary_manager_score(
+        self, manager_evaluation_score_dict: dict[UUID, int | None]
+    ) -> "EvaluationSheet":
+        # TODO 自己評価前にも管理者は評価できる？
+        new_scores = self._update_sheet_score_from_dict(
+            self.manager_scores, manager_evaluation_score_dict, True
+        )
+        object.__setattr__(self, "manager_scores", new_scores)
+        object.__setattr__(
+            self, "status", EvaluationSheetStatus.MANAGER_EVALUATION_DRAFT
+        )
         return self
 
     def update_manager_score(
-        self, manager_evaluation_score: dict[UUID, int]
+        self, manager_evaluation_score_dict: dict[UUID, int | None]
     ) -> "EvaluationSheet":
-        for score in manager_evaluation_score.values():
-            self._validation_score(score)
-        object.__setattr__(self, "manager_evaluation_score", manager_evaluation_score)
+        # TODO 自己評価前にも管理者は評価できる？
+        new_scores = self._update_sheet_score_from_dict(
+            self.manager_scores, manager_evaluation_score_dict, False
+        )
+        object.__setattr__(self, "manager_scores", new_scores)
+        object.__setattr__(self, "status", EvaluationSheetStatus.MANAGER_COMPLETED)
+        return self
+
+
+@dataclass(frozen=True)
+class EvaluationSheetScore:
+    uuid: UUID
+    evaluation_item_uuid: UUID
+    score: int | None
+    created_at: datetime | None
+    updated_at: datetime | None
+
+    @classmethod
+    def init(
+        cls, evaluation_item_uuid: UUID, score: int | None
+    ) -> "EvaluationSheetScore":
+        uuid = uuid4()
+        return cls(
+            uuid=uuid,
+            evaluation_item_uuid=evaluation_item_uuid,
+            score=score,
+            created_at=None,
+            updated_at=None,
+        )
+
+    def validate_score(self, score: int | None) -> None:
+        if score is None:
+            return
+        if not 1 <= score <= 5:
+            raise ValidationError("スコアは1~5で入力してください。")
+
+    def update_score(
+        self, score: int | None, is_temporary: bool
+    ) -> "EvaluationSheetScore":
+        if not is_temporary and score is None:
+            raise ValidationError("スコアが入力されていません。")
+        self.validate_score(score)
+        object.__setattr__(self, "score", score)
+        return self
