@@ -4,6 +4,7 @@ sqlparse==0.5.5
 dj-database-url
 psycopg[binary]
 djangorestframework
+inject
 
 pytest
 pytest-django
