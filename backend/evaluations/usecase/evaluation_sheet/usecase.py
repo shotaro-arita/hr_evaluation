@@ -61,9 +61,7 @@ class EvaluationSheetUsecase:
         if evaluation_sheet:
             raise ValidationError("すでに評価シートは存在しています。")
 
-        employee = self.employee_repository.find_by_id(
-            id=evaluation_sheet.employee_uuid
-        )
+        employee = self.employee_repository.find_by_id(id=dto.employee_id)
         if not employee:
             raise ValidationError("評価対象の従業員が存在しません。")
 

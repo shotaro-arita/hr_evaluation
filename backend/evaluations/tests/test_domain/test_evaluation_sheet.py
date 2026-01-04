@@ -3,7 +3,7 @@ from evaluations.tests.utils.entity_factory import (
     EvaluationSheetScoreFactory,
 )
 from evaluations.tests.utils.testcase import MyAPITestCase
-from uuid import UUID, uuid4
+from uuid import uuid4
 from rest_framework.exceptions import ValidationError
 from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatus
 

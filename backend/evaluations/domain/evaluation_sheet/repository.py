@@ -12,7 +12,7 @@ class EvaluationSheetRepository(ABC):
     @abstractmethod
     def get_by_employee_period(
         self, employee_id: UUID, period_id: UUID
-    ) -> EvaluationSheet:
+    ) -> EvaluationSheet | None:
         raise NotImplementedError
 
     @abstractmethod

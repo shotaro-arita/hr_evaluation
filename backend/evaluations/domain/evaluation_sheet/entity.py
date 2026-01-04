@@ -148,14 +148,12 @@ class EvaluationSheetScore:
     updated_at: datetime | None
 
     @classmethod
-    def init(
-        cls, evaluation_item_uuid: UUID, score: int | None
-    ) -> "EvaluationSheetScore":
+    def init(cls, evaluation_item_uuid: UUID) -> "EvaluationSheetScore":
         uuid = uuid4()
         return cls(
             uuid=uuid,
             evaluation_item_uuid=evaluation_item_uuid,
-            score=score,
+            score=None,
             created_at=None,
             updated_at=None,
         )

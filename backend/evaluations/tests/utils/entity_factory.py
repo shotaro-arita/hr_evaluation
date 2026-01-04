@@ -1,4 +1,9 @@
 from dataclasses import dataclass, field
+from evaluations.domain.employee.entity import Employee, JobTypeEnum, PositionEnum
+from evaluations.domain.evaluation_assignment.entity import (
+    AssignmentRole,
+    EvaluationAssignment,
+)
 from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheet,
     EvaluationSheetScore,
@@ -6,7 +11,6 @@ from evaluations.domain.evaluation_sheet.entity import (
 )
 from django.utils.crypto import get_random_string as django_get_random_string
 from datetime import datetime
-from enum import Enum
 from uuid import UUID, uuid4
 
 
@@ -46,3 +50,24 @@ class EvaluationSheetScoreFactory(EvaluationSheetScore):
     score: int | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
+
+
+@dataclass(frozen=True)
+class EmployeeFactory(Employee):
+    uuid: UUID = field(default_factory=uuid4)
+    employee_code: str = field(default_factory=get_random_string)
+    name: str = field(default_factory=get_random_string)
+    position: PositionEnum = PositionEnum.JUNIOR
+    job_type: JobTypeEnum = JobTypeEnum.SOFTWARE_DEVELOPMENT
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
+
+
+@dataclass(frozen=True)
+class EvaluationAssignmentFactory(EvaluationAssignment):
+    uuid: UUID = field(default_factory=uuid4)
+    target_employee_uuid: UUID = field(default_factory=uuid4)
+    manager_employee_uuid: UUID = field(default_factory=uuid4)
+    role: AssignmentRole = AssignmentRole.MANAGER
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
