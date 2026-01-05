@@ -4,6 +4,6 @@ from evaluations.models.evaluation_item import DbEvaluationItem
 
 
 @admin.register(DbEvaluationItem)
-class DbEvaluationItemAdmin(admin.ModelAdmin[DbEvaluationItem]):
+class DbEvaluationItemAdmin(admin.ModelAdmin):
     list_filter = ["category"]
     list_display = ["__str__", "category"]

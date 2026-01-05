@@ -4,6 +4,6 @@ from evaluations.models.employee import DbEmployee
 
 
 @admin.register(DbEmployee)
-class DbEmployeeAdmin(admin.ModelAdmin[DbEmployee]):
+class DbEmployeeAdmin(admin.ModelAdmin):
     list_filter = ["position", "job_type"]
     list_display = ["__str__", "employee_code", "name"]

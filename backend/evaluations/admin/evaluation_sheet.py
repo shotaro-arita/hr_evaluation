@@ -6,14 +6,12 @@ from evaluations.models.evaluation_sheet import (
 )
 
 
-class DbEvaluationSheetScoreInline(
-    admin.TabularInline[DbEvaluationSheetScore, DbEvaluationSheet]
-):
+class DbEvaluationSheetScoreInline(admin.TabularInline):
     model = DbEvaluationSheetScore
 
 
 @admin.register(DbEvaluationSheet)
-class DbEvaluationSheetAdmin(admin.ModelAdmin[DbEvaluationSheet]):
+class DbEvaluationSheetAdmin(admin.ModelAdmin):
     inlines = [DbEvaluationSheetScoreInline]
     list_filter = ["status"]
     list_display = ["__str__", "employee_uuid", "period_uuid", "status"]
