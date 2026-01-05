@@ -17,7 +17,7 @@ from evaluations.tests.utils.entity_factory import (
 )
 from evaluations.tests.utils.testcase import MyAPITestCase
 from rest_framework.exceptions import ValidationError
-from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatus
+from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatusEnum
 
 
 class EvaluationSheetUsecaseTest(MyAPITestCase):
@@ -174,7 +174,7 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             self.assertIsNotNone(result)
             self.assertEqual(result.uuid, entity.uuid)
             self.assertEqual(result.employee_uuid, employee_id)
-            self.assertEqual(result.status, EvaluationSheetStatus.SELF_COMPLETED)
+            self.assertEqual(result.status, EvaluationSheetStatusEnum.SELF_COMPLETED)
             self.assertEqual(result.own_scores[0].score, 3)
             self.assertEqual(result.own_scores[1].score, 4)
 
@@ -292,6 +292,6 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             self.assertIsNotNone(result)
             self.assertEqual(result.uuid, entity.uuid)
             self.assertEqual(result.employee_uuid, employee_id)
-            self.assertEqual(result.status, EvaluationSheetStatus.MANAGER_COMPLETED)
+            self.assertEqual(result.status, EvaluationSheetStatusEnum.MANAGER_COMPLETED)
             self.assertEqual(result.manager_scores[0].score, 3)
             self.assertEqual(result.manager_scores[1].score, 4)

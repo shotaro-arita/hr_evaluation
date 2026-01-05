@@ -4,18 +4,22 @@ from enum import Enum
 from uuid import UUID
 
 
-class AssignmentRole(str, Enum):
+class AssignmentRoleEnum(str, Enum):
     SELF = "SELF"
     MANAGER = "MANAGER"
 
     @property
     def text(self) -> str:
-        if self.value == AssignmentRole.SELF:
+        if self.value == AssignmentRoleEnum.SELF:
             return "本人"
-        elif self.value == AssignmentRole.MANAGER:
+        elif self.value == AssignmentRoleEnum.MANAGER:
             return "管理者"
         else:
             raise ValueError("無効な役割です。")
+
+    @classmethod
+    def choices(cls) -> list[tuple[str, str]]:
+        return [(s.value, s.text) for s in cls]
 
 
 @dataclass(frozen=True)
@@ -25,6 +29,6 @@ class EvaluationAssignment:
     # period_uuid: UUID
     target_employee_uuid: UUID
     manager_employee_uuid: UUID
-    role: AssignmentRole
+    role: AssignmentRoleEnum
     created_at: datetime
     updated_at: datetime

@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 from rest_framework.exceptions import ValidationError
 
 
-class EvaluationSheetStatus(str, Enum):
+class EvaluationSheetStatusEnum(str, Enum):
     PENDING = "PENDING"
     SELF_EVALUATION_DRAFT = "SELF_EVALUATION_DRAFT"
     SELF_COMPLETED = "SELF_COMPLETED"
@@ -16,20 +16,24 @@ class EvaluationSheetStatus(str, Enum):
 
     @property
     def text(self) -> str:
-        if self.value == EvaluationSheetStatus.PENDING:
+        if self.value == EvaluationSheetStatusEnum.PENDING:
             return "未完了"
-        elif self.value == EvaluationSheetStatus.SELF_EVALUATION_DRAFT:
+        elif self.value == EvaluationSheetStatusEnum.SELF_EVALUATION_DRAFT:
             return "自己評価下書き"
-        elif self.value == EvaluationSheetStatus.SELF_COMPLETED:
+        elif self.value == EvaluationSheetStatusEnum.SELF_COMPLETED:
             return "自己評価完了"
-        elif self.value == EvaluationSheetStatus.MANAGER_EVALUATION_DRAFT:
+        elif self.value == EvaluationSheetStatusEnum.MANAGER_EVALUATION_DRAFT:
             return "管理者評価下書き"
-        elif self.value == EvaluationSheetStatus.MANAGER_COMPLETED:
+        elif self.value == EvaluationSheetStatusEnum.MANAGER_COMPLETED:
             return "管理者評価完了"
-        elif self.value == EvaluationSheetStatus.CANCELLED:
+        elif self.value == EvaluationSheetStatusEnum.CANCELLED:
             return "キャンセル"
         else:
             raise ValueError("無効な役割です。")
+
+    @classmethod
+    def choices(cls) -> list[tuple[str, str]]:
+        return [(s.value, s.text) for s in cls]
 
 
 @dataclass(frozen=True)
@@ -42,7 +46,7 @@ class EvaluationSheet:
     own_scores: list["EvaluationSheetScore"]
     manager_scores: list["EvaluationSheetScore"]
 
-    status: EvaluationSheetStatus
+    status: EvaluationSheetStatusEnum
 
     created_at: datetime | None
     updated_at: datetime | None
@@ -64,7 +68,7 @@ class EvaluationSheet:
             employee_uuid=employee_uuid,
             own_scores=own_scores,
             manager_scores=manager_scores,
-            status=EvaluationSheetStatus.PENDING,
+            status=EvaluationSheetStatusEnum.PENDING,
             created_at=None,
             updated_at=None,
         )
@@ -101,7 +105,9 @@ class EvaluationSheet:
             self.own_scores, own_evaluation_score_dict, True
         )
         object.__setattr__(self, "own_scores", new_scores)
-        object.__setattr__(self, "status", EvaluationSheetStatus.SELF_EVALUATION_DRAFT)
+        object.__setattr__(
+            self, "status", EvaluationSheetStatusEnum.SELF_EVALUATION_DRAFT
+        )
         return self
 
     def complete_own_score(
@@ -111,7 +117,7 @@ class EvaluationSheet:
             self.own_scores, own_evaluation_score_dict, False
         )
         object.__setattr__(self, "own_scores", new_scores)
-        object.__setattr__(self, "status", EvaluationSheetStatus.SELF_COMPLETED)
+        object.__setattr__(self, "status", EvaluationSheetStatusEnum.SELF_COMPLETED)
         return self
 
     def save_temporary_manager_score(
@@ -123,7 +129,7 @@ class EvaluationSheet:
         )
         object.__setattr__(self, "manager_scores", new_scores)
         object.__setattr__(
-            self, "status", EvaluationSheetStatus.MANAGER_EVALUATION_DRAFT
+            self, "status", EvaluationSheetStatusEnum.MANAGER_EVALUATION_DRAFT
         )
         return self
 
@@ -135,7 +141,7 @@ class EvaluationSheet:
             self.manager_scores, manager_evaluation_score_dict, False
         )
         object.__setattr__(self, "manager_scores", new_scores)
-        object.__setattr__(self, "status", EvaluationSheetStatus.MANAGER_COMPLETED)
+        object.__setattr__(self, "status", EvaluationSheetStatusEnum.MANAGER_COMPLETED)
         return self
 
 

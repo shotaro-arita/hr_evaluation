@@ -7,7 +7,7 @@ from evaluations.utils.pagination import PaginationQueryDto
 from uuid import UUID
 
 from evaluations.domain.evaluation_sheet.entity import (
-    EvaluationSheetStatus,
+    EvaluationSheetStatusEnum,
 )
 
 
@@ -37,7 +37,7 @@ class EvaluationSheetRetrieveModel:
     self_evaluation_score: dict[UUID, int]
     manager_evaluation_score: dict[UUID, int]
 
-    status: EvaluationSheetStatus
+    status: EvaluationSheetStatusEnum
 
     created_at: datetime
     updated_at: datetime

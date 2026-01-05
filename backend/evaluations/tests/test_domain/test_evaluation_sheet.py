@@ -5,7 +5,7 @@ from evaluations.tests.utils.entity_factory import (
 from evaluations.tests.utils.testcase import MyAPITestCase
 from uuid import uuid4
 from rest_framework.exceptions import ValidationError
-from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatus
+from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatusEnum
 
 
 class EvaluationSheetTest(MyAPITestCase):
@@ -66,7 +66,9 @@ class EvaluationSheetTest(MyAPITestCase):
 
             result = entity.save_temporary_own_score(score_dict)
 
-            self.assertEqual(result.status, EvaluationSheetStatus.SELF_EVALUATION_DRAFT)
+            self.assertEqual(
+                result.status, EvaluationSheetStatusEnum.SELF_EVALUATION_DRAFT
+            )
             self.assertEqual(result.own_scores[0].score, 3)
             self.assertEqual(result.own_scores[1].score, 5)
 
@@ -96,7 +98,7 @@ class EvaluationSheetTest(MyAPITestCase):
 
             result = entity.complete_own_score(score_dict)
 
-            self.assertEqual(result.status, EvaluationSheetStatus.SELF_COMPLETED)
+            self.assertEqual(result.status, EvaluationSheetStatusEnum.SELF_COMPLETED)
             self.assertEqual(result.own_scores[0].score, 1)
             self.assertEqual(result.own_scores[1].score, 4)
 
@@ -114,7 +116,7 @@ class EvaluationSheetTest(MyAPITestCase):
             result = entity.save_temporary_manager_score(score_dict)
 
             self.assertEqual(
-                result.status, EvaluationSheetStatus.MANAGER_EVALUATION_DRAFT
+                result.status, EvaluationSheetStatusEnum.MANAGER_EVALUATION_DRAFT
             )
             self.assertIsNone(result.manager_scores[0].score)
             self.assertEqual(result.manager_scores[1].score, 2)
@@ -145,6 +147,6 @@ class EvaluationSheetTest(MyAPITestCase):
 
             result = entity.update_manager_score(score_dict)
 
-            self.assertEqual(result.status, EvaluationSheetStatus.MANAGER_COMPLETED)
+            self.assertEqual(result.status, EvaluationSheetStatusEnum.MANAGER_COMPLETED)
             self.assertEqual(result.manager_scores[0].score, 2)
             self.assertEqual(result.manager_scores[1].score, 5)

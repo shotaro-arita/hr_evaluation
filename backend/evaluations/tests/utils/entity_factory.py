@@ -1,13 +1,13 @@
 from dataclasses import dataclass, field
 from evaluations.domain.employee.entity import Employee, JobTypeEnum, PositionEnum
 from evaluations.domain.evaluation_assignment.entity import (
-    AssignmentRole,
+    AssignmentRoleEnum,
     EvaluationAssignment,
 )
 from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheet,
     EvaluationSheetScore,
-    EvaluationSheetStatus,
+    EvaluationSheetStatusEnum,
 )
 from django.utils.crypto import get_random_string as django_get_random_string
 from datetime import datetime
@@ -38,7 +38,7 @@ class EvaluationSheetFactory(EvaluationSheet):
     employee_uuid: UUID = field(default_factory=uuid4)
     own_scores: list[EvaluationSheetScore] = field(default_factory=list)
     manager_scores: list[EvaluationSheetScore] = field(default_factory=list)
-    status: EvaluationSheetStatus = EvaluationSheetStatus.PENDING
+    status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
@@ -68,6 +68,6 @@ class EvaluationAssignmentFactory(EvaluationAssignment):
     uuid: UUID = field(default_factory=uuid4)
     target_employee_uuid: UUID = field(default_factory=uuid4)
     manager_employee_uuid: UUID = field(default_factory=uuid4)
-    role: AssignmentRole = AssignmentRole.MANAGER
+    role: AssignmentRoleEnum = AssignmentRoleEnum.MANAGER
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
