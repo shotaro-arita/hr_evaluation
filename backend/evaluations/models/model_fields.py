@@ -12,7 +12,7 @@ _GT = TypeVar("_GT")
 
 
 # class ChoiceField(models.CharField[T, T], Generic[T]):
-class ChoiceField(models.CharField[_ST, _GT]):
+class ChoiceField(models.CharField):
     """
     choiceの制御はdb上ではなく、application上で行なっていること。
     makemigrationsの時のみchoicesを無効化する。
