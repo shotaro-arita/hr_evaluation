@@ -1,5 +1,23 @@
-import inject
 from inject import Binder
+
+from evaluations.infrastructure.query_service.evaluation_sheet import (
+    EvaluationSheetQueryServiceImpl,
+)
+from evaluations.infrastructure.repository.employee import (
+    EmployeeRepositoryImpl,
+)
+from evaluations.infrastructure.repository.evaluation_assignment_repository import (
+    EvaluationAssignmentRepositoryImpl,
+)
+from evaluations.infrastructure.repository.evaluation_item_position_relation import (
+    EvaluationItemPositionRelationRepositoryImpl,
+)
+from evaluations.infrastructure.repository.evaluation_sheet import (
+    EvaluationSheetRepositoryImpl,
+)
+from evaluations.usecase.evaluation_sheet.query_service import (
+    EvaluationSheetQueryService,
+)
 
 
 from evaluations.domain.employee.repository import EmployeeRepository
@@ -13,16 +31,14 @@ from evaluations.domain.evaluation_sheet.repository import EvaluationSheetReposi
 
 
 def injection_config(binder: Binder) -> None:
-    pass
-    # binder.bind(
-    #     EvaluationSheetRepository,
-    # )
-    # binder.bind(
-    #     EmployeeRepository,
-    # )
-    # binder.bind(
-    #     EvaluationAssignmentRepository,
-    # )
-    # binder.bind(
-    #     EvaluationItemPositionRelationRepository,
-    # )
+    # Repository
+    binder.bind(EvaluationSheetRepository, EvaluationSheetRepositoryImpl)
+    binder.bind(EmployeeRepository, EmployeeRepositoryImpl)
+    binder.bind(EvaluationAssignmentRepository, EvaluationAssignmentRepositoryImpl)
+    binder.bind(
+        EvaluationItemPositionRelationRepository,
+        EvaluationItemPositionRelationRepositoryImpl,
+    )
+
+    # QueryService
+    binder.bind(EvaluationSheetQueryService, EvaluationSheetQueryServiceImpl)

@@ -10,8 +10,14 @@ from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheetStatusEnum,
 )
 from django.utils.crypto import get_random_string as django_get_random_string
+from faker import Faker
+from dateutil.tz import gettz
+from django.conf import settings
 from datetime import datetime
 from uuid import UUID, uuid4
+
+
+fake = Faker()
 
 
 class Counter:
@@ -29,6 +35,11 @@ class Counter:
 
 def get_random_string() -> str:
     return django_get_random_string(12)
+
+def get_random_datetime() -> datetime:
+    d: datetime = fake.date_time_between()
+    localized = d.astimezone(gettz(settings.TIME_ZONE))
+    return localized
 
 
 @dataclass(frozen=True)

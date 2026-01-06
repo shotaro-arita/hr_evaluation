@@ -5,6 +5,9 @@ dj-database-url
 psycopg[binary]
 djangorestframework
 inject
+factory_boy
+Faker
+python-dateutil
 
 pytest
 pytest-django

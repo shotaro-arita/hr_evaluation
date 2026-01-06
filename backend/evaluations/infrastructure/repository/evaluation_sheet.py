@@ -85,6 +85,7 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
         evaluation_sheet_model.save()
 
         self._create_scores(evaluation_sheet_model, evaluation_sheet)
+        evaluation_sheet_model.refresh_from_db()
         return evaluation_sheet_model.to_entity()
 
     @transaction.atomic
@@ -102,6 +103,7 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
         evaluation_sheet_model.save()
 
         self._sync_scores(evaluation_sheet_model, evaluation_sheet)
+        evaluation_sheet_model.refresh_from_db()
         return evaluation_sheet_model.to_entity()
 
     def _sync_scores(
