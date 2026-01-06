@@ -12,8 +12,10 @@ from evaluations.domain.evaluation_sheet.entity import (
 
 
 @dataclass(frozen=True)
-class EvaluationItemRetrieveModel:
+class EvaluationScoreRetrieveModel:
     uuid: UUID
+
+    item_uuid: UUID
     title: str
     category: EvaluationItemCategory
     description: str
@@ -32,10 +34,14 @@ class EvaluationSheetRetrieveModel:
     uuid: UUID
 
     period_uuid: UUID
-    employee_uuid: UUID
+    period_name: str
 
-    self_evaluation_score: dict[UUID, int]
-    manager_evaluation_score: dict[UUID, int]
+    employee_uuid: UUID
+    employee_code: str
+    employee_name: str
+
+    self_evaluation_score: list[EvaluationScoreRetrieveModel]
+    manager_evaluation_score: list[EvaluationScoreRetrieveModel]
 
     status: EvaluationSheetStatusEnum
 
@@ -63,4 +69,5 @@ class EvaluationSheetQueryService(ABC):
     def get_list_by_employee_id(
         self, employee_id: UUID
     ) -> list[EvaluationSheetRetrieveModel]:
+        # TODO リスト用のリードモデル作成
         raise NotImplementedError
