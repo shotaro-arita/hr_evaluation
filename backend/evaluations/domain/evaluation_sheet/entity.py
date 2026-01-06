@@ -147,6 +147,8 @@ class EvaluationSheet:
 
 @dataclass(frozen=True)
 class EvaluationSheetScore:
+    # TODO そもそもクラス自体を自分と管理者評価で分けるべきか？
+    # 管理者評価でルールが変わる等あれば分けるべきだが、今はないから良い。
     uuid: UUID
     evaluation_item_uuid: UUID
     score: int | None
