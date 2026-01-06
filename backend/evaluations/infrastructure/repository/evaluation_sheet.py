@@ -1,4 +1,3 @@
-from tkinter import NONE
 from uuid import UUID
 
 from django.db import transaction
@@ -28,7 +27,7 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
     ) -> EvaluationSheet | None:
         try:
             sheet = DbEvaluationSheet.objects.prefetch_related("scores").get(
-                employee_uuid=employee_id, period_uuid=period_id
+                employee_id=employee_id, period_id=period_id
             )
         except DbEvaluationSheet.DoesNotExist:
             return None
@@ -39,8 +38,8 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
         evaluation_sheet_model: DbEvaluationSheet,
         evaluation_sheet: EvaluationSheet,
     ) -> EvaluationSheet:
-        evaluation_sheet_model.period_uuid = evaluation_sheet.period_uuid
-        evaluation_sheet_model.employee_uuid = evaluation_sheet.employee_uuid
+        evaluation_sheet_model.period_id = evaluation_sheet.period_uuid
+        evaluation_sheet_model.employee_id = evaluation_sheet.employee_uuid
         evaluation_sheet_model.status = evaluation_sheet.status.value
         return evaluation_sheet_model
 
@@ -72,7 +71,7 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
                 uuid=score.uuid,
                 evaluation_sheet=evaluation_sheet_model,
             )
-        score_model.evaluation_item_uuid = score.evaluation_item_uuid
+        score_model.evaluation_item_id = score.evaluation_item_uuid
         score_model.score = score.score
         score_model.is_manager = is_manager
         return score_model
@@ -144,5 +143,5 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
             DbEvaluationSheetScore.objects.bulk_create(to_create)
         if to_update:
             DbEvaluationSheetScore.objects.bulk_update(
-                to_update, ["evaluation_item_uuid", "score", "is_manager"]
+                to_update, ["evaluation_item_id", "score", "is_manager"]
             )

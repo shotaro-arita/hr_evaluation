@@ -5,6 +5,7 @@ from evaluations.domain.evaluation_assignment.entity import (
     AssignmentRoleEnum,
     EvaluationAssignment,
 )
+from evaluations.models.employee import DbEmployee
 from evaluations.models.model_fields import ChoiceField
 
 
@@ -15,8 +16,12 @@ class EvaluationAssignmentManager(models.Manager["DbEvaluationAssignment"]):
 
 class DbEvaluationAssignment(models.Model):
     uuid = models.UUIDField(primary_key=True)
-    target_employee_uuid = models.UUIDField()
-    manager_employee_uuid = models.UUIDField()
+    target_employee = models.OneToOneField(
+        DbEmployee, on_delete=models.CASCADE, related_name="evaluation_targets"
+    )
+    manager_employee = models.ForeignKey(
+        DbEmployee, on_delete=models.CASCADE, related_name="evaluation_managers"
+    )
     role = ChoiceField(max_length=16, choices=AssignmentRoleEnum.choices())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -27,13 +32,13 @@ class DbEvaluationAssignment(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.target_employee_uuid}:{self.manager_employee_uuid}"
+        return f"{self.target_employee_id}:{self.manager_employee_id}"
 
     def to_entity(self) -> EvaluationAssignment:
         return EvaluationAssignment(
             uuid=self.uuid,
-            target_employee_uuid=self.target_employee_uuid,
-            manager_employee_uuid=self.manager_employee_uuid,
+            target_employee_uuid=self.target_employee_id,
+            manager_employee_uuid=self.manager_employee_id,
             role=AssignmentRoleEnum(self.role),
             created_at=self.created_at,
             updated_at=self.updated_at,

@@ -6,6 +6,9 @@ from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheetScore,
     EvaluationSheetStatusEnum,
 )
+from evaluations.models.employee import DbEmployee
+from evaluations.models.period import DbPeriod
+from evaluations.models.evaluation_item import DbEvaluationItem
 from evaluations.models.model_fields import ChoiceField
 
 
@@ -21,8 +24,12 @@ class EvaluationSheetScoreManager(models.Manager["DbEvaluationSheetScore"]):
 
 class DbEvaluationSheet(models.Model):
     uuid = models.UUIDField(primary_key=True)
-    period_uuid = models.UUIDField()
-    employee_uuid = models.UUIDField()
+    period = models.ForeignKey(
+        DbPeriod, on_delete=models.CASCADE, related_name="evaluation_sheets"
+    )
+    employee = models.ForeignKey(
+        DbEmployee, on_delete=models.CASCADE, related_name="evaluation_sheets"
+    )
     status = ChoiceField(max_length=32, choices=EvaluationSheetStatusEnum.choices())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -33,7 +40,7 @@ class DbEvaluationSheet(models.Model):
         ordering = ["-created_at"]
         constraints = [
             models.UniqueConstraint(
-                fields=["period_uuid", "employee_uuid"],
+                fields=["period", "employee"],
                 name="unique_evaluation_sheet_period_employee",
             )
         ]
@@ -47,8 +54,8 @@ class DbEvaluationSheet(models.Model):
         manager_scores = [score.to_entity() for score in scores if score.is_manager]
         return EvaluationSheet(
             uuid=self.uuid,
-            period_uuid=self.period_uuid,
-            employee_uuid=self.employee_uuid,
+            period_uuid=self.period_id,
+            employee_uuid=self.employee_id,
             own_scores=own_scores,
             manager_scores=manager_scores,
             status=EvaluationSheetStatusEnum(self.status),
@@ -69,7 +76,9 @@ class DbEvaluationSheetScore(models.Model):
     evaluation_sheet = models.ForeignKey(
         DbEvaluationSheet, on_delete=models.CASCADE, related_name="scores"
     )
-    evaluation_item_uuid = models.UUIDField()
+    evaluation_item = models.ForeignKey(
+        DbEvaluationItem, on_delete=models.CASCADE, related_name="evaluation_scores"
+    )
     score = models.IntegerField(null=True)
     is_manager = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -81,12 +90,12 @@ class DbEvaluationSheetScore(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.evaluation_sheet_id}:{self.evaluation_item_uuid}"
+        return f"{self.evaluation_sheet_id}:{self.evaluation_item_id}"
 
     def to_entity(self) -> EvaluationSheetScore:
         return EvaluationSheetScore(
             uuid=self.uuid,
-            evaluation_item_uuid=self.evaluation_item_uuid,
+            evaluation_item_uuid=self.evaluation_item_id,
             score=self.score,
             created_at=self.created_at,
             updated_at=self.updated_at,

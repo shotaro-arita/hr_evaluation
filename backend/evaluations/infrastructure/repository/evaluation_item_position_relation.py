@@ -16,5 +16,5 @@ class EvaluationItemPositionRelationRepositoryImpl(
         return list(
             DbEvaluationItemPositionRelation.objects.filter(
                 position=position.value
-            ).order_by("order").values_list("evaluation_item_uuid", flat=True)
+            ).order_by("order").values_list("evaluation_item_id", flat=True)
         )

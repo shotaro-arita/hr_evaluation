@@ -2,10 +2,7 @@ from uuid import UUID
 
 from evaluations.domain.evaluation_item.entity import EvaluationItemCategory
 from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatusEnum
-from evaluations.models.employee import DbEmployee
-from evaluations.models.evaluation_item import DbEvaluationItem
 from evaluations.models.evaluation_sheet import DbEvaluationSheet
-from evaluations.models.period import DbPeriod
 from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationScoreRetrieveModel,
     EvaluationSheetQueryService,
@@ -16,8 +13,10 @@ from evaluations.usecase.evaluation_sheet.query_service import (
 class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
     def find_by_id(self, id: UUID) -> EvaluationSheetRetrieveModel | None:
         try:
-            sheet_model = DbEvaluationSheet.objects.prefetch_related("scores").get(
-                uuid=id
+            sheet_model = (
+                DbEvaluationSheet.objects.select_related("period", "employee")
+                .prefetch_related("scores__evaluation_item")
+                .get(uuid=id)
             )
         except DbEvaluationSheet.DoesNotExist:
             return None
@@ -26,8 +25,10 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
     def get_list_by_employee_id(
         self, employee_id: UUID
     ) -> list[EvaluationSheetRetrieveModel]:
-        sheet_models = DbEvaluationSheet.objects.prefetch_related("scores").filter(
-            employee_uuid=employee_id
+        sheet_models = (
+            DbEvaluationSheet.objects.select_related("period", "employee")
+            .prefetch_related("scores__evaluation_item")
+            .filter(employee_id=employee_id)
         )
         return [self._to_retrieve_model(sheet_model) for sheet_model in sheet_models]
 
@@ -35,15 +36,10 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
         self, sheet_model: DbEvaluationSheet
     ) -> EvaluationSheetRetrieveModel:
         score_models = list(sheet_model.scores.all())
-        item_ids = [score.evaluation_item_uuid for score in score_models]
-        item_model_map = {
-            item.uuid: item
-            for item in DbEvaluationItem.objects.filter(uuid__in=item_ids)
-        }
         self_scores: list[EvaluationScoreRetrieveModel] = []
         manager_scores: list[EvaluationScoreRetrieveModel] = []
         for score_model in score_models:
-            item_model = item_model_map.get(score_model.evaluation_item_uuid)
+            item_model = score_model.evaluation_item
             if item_model is None:
                 continue
             model = EvaluationScoreRetrieveModel(
@@ -64,15 +60,13 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
             else:
                 self_scores.append(model)
 
-        period = DbPeriod.objects.filter(uuid=sheet_model.period_uuid).first()
-        employee = DbEmployee.objects.filter(uuid=sheet_model.employee_uuid).first()
         return EvaluationSheetRetrieveModel(
             uuid=sheet_model.uuid,
-            period_uuid=sheet_model.period_uuid,
-            period_name=period.name if period else "",
-            employee_uuid=sheet_model.employee_uuid,
-            employee_code=employee.employee_code if employee else "",
-            employee_name=employee.name if employee else "",
+            period_uuid=sheet_model.period_id,
+            period_name=sheet_model.period.name,
+            employee_uuid=sheet_model.employee_id,
+            employee_code=sheet_model.employee.employee_code,
+            employee_name=sheet_model.employee.name,
             self_evaluation_score=self_scores,
             manager_evaluation_score=manager_scores,
             status=EvaluationSheetStatusEnum(sheet_model.status),

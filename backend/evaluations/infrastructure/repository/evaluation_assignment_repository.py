@@ -13,7 +13,7 @@ class EvaluationAssignmentRepositoryImpl(EvaluationAssignmentRepository):
     ) -> EvaluationAssignment | None:
         try:
             employee_model = DbEvaluationAssignment.objects.get(
-                target_employee_uuid=target_employee_id
+                target_employee_id=target_employee_id
             )
         except DbEvaluationAssignment.DoesNotExist:
             return None

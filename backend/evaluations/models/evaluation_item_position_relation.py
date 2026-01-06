@@ -5,6 +5,7 @@ from evaluations.domain.evaluation_item_position_relation.entity import (
     EvaluationItemPositionRelation,
 )
 from evaluations.domain.employee.entity import PositionEnum
+from evaluations.models.evaluation_item import DbEvaluationItem
 from evaluations.models.model_fields import ChoiceField
 
 
@@ -18,7 +19,9 @@ class EvaluationItemPositionRelationManager(
 class DbEvaluationItemPositionRelation(models.Model):
     uuid = models.UUIDField(primary_key=True)
     position = ChoiceField(max_length=2, choices=PositionEnum.choices())
-    evaluation_item_uuid = models.UUIDField()
+    evaluation_item = models.ForeignKey(
+        DbEvaluationItem, on_delete=models.CASCADE, related_name="position_relations"
+    )
     order = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -35,7 +38,7 @@ class DbEvaluationItemPositionRelation(models.Model):
         return EvaluationItemPositionRelation(
             uuid=self.uuid,
             position=PositionEnum(self.position),
-            evaluation_item_uuid=self.evaluation_item_uuid,
+            evaluation_item_uuid=self.evaluation_item_id,
             order=self.order,
             created_at=self.created_at,
             updated_at=self.updated_at,
