@@ -71,7 +71,7 @@ class DbEvaluationSheetScore(models.Model):
     )
     evaluation_item_uuid = models.UUIDField()
     score = models.IntegerField(null=True)
-    is_manager = models.BooleanField(default=False)
+    is_manager = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
