@@ -32,13 +32,13 @@ from evaluations.domain.evaluation_sheet.repository import EvaluationSheetReposi
 
 def injection_config(binder: Binder) -> None:
     # Repository
-    binder.bind(EvaluationSheetRepository, EvaluationSheetRepositoryImpl)
-    binder.bind(EmployeeRepository, EmployeeRepositoryImpl)
-    binder.bind(EvaluationAssignmentRepository, EvaluationAssignmentRepositoryImpl)
+    binder.bind(EvaluationSheetRepository, EvaluationSheetRepositoryImpl())
+    binder.bind(EmployeeRepository, EmployeeRepositoryImpl())
+    binder.bind(EvaluationAssignmentRepository, EvaluationAssignmentRepositoryImpl())
     binder.bind(
         EvaluationItemPositionRelationRepository,
-        EvaluationItemPositionRelationRepositoryImpl,
+        EvaluationItemPositionRelationRepositoryImpl(),
     )
 
     # QueryService
-    binder.bind(EvaluationSheetQueryService, EvaluationSheetQueryServiceImpl)
+    binder.bind(EvaluationSheetQueryService, EvaluationSheetQueryServiceImpl())
