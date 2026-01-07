@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import UUID
 
 from rest_framework import status, viewsets
@@ -42,16 +43,22 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         return Response(asdict(evaluation_sheet), status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["PUT"])
-    def update_own(self, request: Request) -> Response:
-        serializer = EvaluationSheetUpdateDtoSerializer(data=request.data)
+    def update_own(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        sheet_uuid = UUID(str(kwargs["uuid"]))
+        payload = {**request.data, "uuid": sheet_uuid}
+        serializer = EvaluationSheetUpdateDtoSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
         evaluation_sheet = usecase.update_own(serializer.validated_data)
         return Response(asdict(evaluation_sheet))
 
     @action(detail=True, methods=["PUT"])
-    def update_by_manager(self, request: Request) -> Response:
-        serializer = EvaluationSheetUpdateDtoSerializer(data=request.data)
+    def update_by_manager(
+        self, request: Request, *args: Any, **kwargs: Any
+    ) -> Response:
+        sheet_uuid = UUID(str(kwargs["uuid"]))
+        payload = {**request.data, "uuid": sheet_uuid}
+        serializer = EvaluationSheetUpdateDtoSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
         evaluation_sheet = usecase.update_by_manager(serializer.validated_data)
