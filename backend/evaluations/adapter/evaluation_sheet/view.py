@@ -3,6 +3,7 @@ from uuid import UUID
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -14,16 +15,19 @@ from evaluations.adapter.evaluation_sheet.serializer import (
 )
 from evaluations.usecase.evaluation_sheet.usecase import EvaluationSheetUsecase
 from evaluations.utils.dataclass import asdict
+from evaluations.utils.user import to_user_entity
 
 
 class EvaluationSheetViewSet(viewsets.ViewSet):
     lookup_field = "uuid"
+    permission_classes = [IsAuthenticated]
 
     def retrieve(self, request: Request, uuid: UUID) -> Response:
         serializer = EvaluationSheetIdDtoSerializer(data={"uuid": uuid})
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        evaluation_sheet = usecase.retrieve(serializer.validated_data)
+        actor = to_user_entity(request.user)
+        evaluation_sheet = usecase.retrieve(actor, serializer.validated_data)
         return Response(asdict(evaluation_sheet))
 
     def list(self, request: Request) -> Response:
@@ -32,14 +36,18 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         )
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        evaluation_sheets = usecase.list_by_employee_id(serializer.validated_data)
+        actor = to_user_entity(request.user)
+        evaluation_sheets = usecase.list_by_employee_id(
+            actor, serializer.validated_data
+        )
         return Response([asdict(sheet) for sheet in evaluation_sheets])
 
     def create(self, request: Request) -> Response:
         serializer = EvaluationSheetCreateDtoSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        evaluation_sheet = usecase.create(serializer.validated_data)
+        actor = to_user_entity(request.user)
+        evaluation_sheet = usecase.create(actor, serializer.validated_data)
         return Response(asdict(evaluation_sheet), status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["PUT"])
@@ -49,7 +57,8 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         serializer = EvaluationSheetUpdateDtoSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        evaluation_sheet = usecase.update_own(serializer.validated_data)
+        actor = to_user_entity(request.user)
+        evaluation_sheet = usecase.update_own(actor, serializer.validated_data)
         return Response(asdict(evaluation_sheet))
 
     @action(detail=True, methods=["PUT"])
@@ -61,5 +70,6 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         serializer = EvaluationSheetUpdateDtoSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        evaluation_sheet = usecase.update_by_manager(serializer.validated_data)
+        actor = to_user_entity(request.user)
+        evaluation_sheet = usecase.update_by_manager(actor, serializer.validated_data)
         return Response(asdict(evaluation_sheet))

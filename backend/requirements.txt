@@ -5,6 +5,7 @@ dj-database-url
 psycopg[binary]
 djangorestframework
 djangorestframework-dataclasses
+djangorestframework-simplejwt
 inject
 factory_boy
 Faker
