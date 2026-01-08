@@ -73,7 +73,7 @@ class EvaluationSheet:
             updated_at=None,
         )
 
-    def check_update_own(self, actor_employee_uuid) -> "EvaluationSheet":
+    def check_update_own(self, actor_employee_uuid: UUID) -> "EvaluationSheet":
         if self.employee_uuid != actor_employee_uuid:
             raise ValidationError("更新者と評価シートの対象者が一致していません。")
         return self

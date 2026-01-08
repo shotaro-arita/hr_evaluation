@@ -41,21 +41,25 @@ class EvaluationSheetUsecase:
         )
         self.evaluation_assignment_repository = evaluation_assignment_repository
 
-    def retrieve(self, actor: User, dto: EvaluationSheetIdDto) -> EvaluationSheetRetrieveModel:
+    def retrieve(
+        self, request_user: User, dto: EvaluationSheetIdDto
+    ) -> EvaluationSheetRetrieveModel:
         evaluation_sheet = self.evaluation_sheet_query_service.find_by_id(dto.uuid)
         if evaluation_sheet is None:
             raise ValidationError("評価シートが見つかりません。")
         return evaluation_sheet
 
     def list_by_employee_id(
-        self, actor: User, dto: EvaluationSheetEmployeeIdDto
+        self, request_user: User, dto: EvaluationSheetEmployeeIdDto
     ) -> list[EvaluationSheetRetrieveModel]:
         evaluation_sheets = self.evaluation_sheet_query_service.get_list_by_employee_id(
             dto.employee_id
         )
         return evaluation_sheets
 
-    def create(self, actor: User, dto: EvaluationSheetCreateDto) -> EvaluationSheet:
+    def create(
+        self, request_user: User, dto: EvaluationSheetCreateDto
+    ) -> EvaluationSheet:
         evaluation_sheet = self.evaluation_sheet_repository.get_by_employee_period(
             employee_id=dto.employee_id, period_id=dto.period_id
         )
@@ -80,11 +84,15 @@ class EvaluationSheetUsecase:
         evaluation_sheet = self.evaluation_sheet_repository.create(evaluation_sheet)
         return evaluation_sheet
 
-    def update_own(self, actor: User, dto: EvaluationSheetUpdateDto) -> EvaluationSheet:
+    def update_own(
+        self, request_user: User, dto: EvaluationSheetUpdateDto
+    ) -> EvaluationSheet:
         evaluation_sheet = self.evaluation_sheet_repository.find_by_id(id=dto.uuid)
         if not evaluation_sheet:
             raise ValidationError("評価シートが存在しません。")
-        evaluation_sheet.check_update_own(actor.employee_uuid)
+        if request_user.employee_uuid is None:
+            raise ValidationError("リクエストユーザが従業員に紐づいていません。")
+        evaluation_sheet.check_update_own(request_user.employee_uuid)
 
         employee = self.employee_repository.find_by_id(
             id=evaluation_sheet.employee_uuid
@@ -105,7 +113,7 @@ class EvaluationSheetUsecase:
         return evaluation_sheet
 
     def update_by_manager(
-        self, actor: User, dto: EvaluationSheetUpdateDto
+        self, request_user: User, dto: EvaluationSheetUpdateDto
     ) -> EvaluationSheet:
         evaluation_sheet = self.evaluation_sheet_repository.find_by_id(id=dto.uuid)
         if not evaluation_sheet:
@@ -124,7 +132,7 @@ class EvaluationSheetUsecase:
         )
         if not evaluation_assignment:
             raise ValidationError("この従業員は評価者が割り当てられていません。")
-        if evaluation_assignment.manager_employee_uuid != actor.employee_uuid:
+        if evaluation_assignment.manager_employee_uuid != request_user.employee_uuid:
             raise ValidationError("この従業員の評価者ではありません。")
 
         score_dict = {

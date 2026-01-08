@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -5,6 +7,7 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 
+from evaluations.domain.user.entity import User
 from evaluations.models.employee import DbEmployee
 
 
@@ -50,7 +53,8 @@ class UserManager(BaseUserManager["DbUser"]):
 
 
 class DbUser(AbstractBaseUser, PermissionsMixin):
-    uuid = models.UUIDField(primary_key=True)
+    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    # admin専用ユーザは従業員に紐づかないためnullを許容
     employee = models.OneToOneField(
         DbEmployee,
         on_delete=models.CASCADE,
@@ -75,3 +79,13 @@ class DbUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         return f"{self.employee_code}{self.name}"
+
+    def to_entity(self) -> User:
+        return User(
+            uuid=self.uuid,
+            employee_uuid=self.employee_id,
+            employee_code=self.employee_code,
+            password=self.password,
+            is_active=self.is_active,
+            name=self.name,
+        )

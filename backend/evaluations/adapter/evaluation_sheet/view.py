@@ -26,8 +26,9 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         serializer = EvaluationSheetIdDtoSerializer(data={"uuid": uuid})
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        actor = to_user_entity(request.user)
-        evaluation_sheet = usecase.retrieve(actor, serializer.validated_data)
+        evaluation_sheet = usecase.retrieve(
+            to_user_entity(request.user), serializer.validated_data
+        )
         return Response(asdict(evaluation_sheet))
 
     def list(self, request: Request) -> Response:
@@ -36,9 +37,8 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         )
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        actor = to_user_entity(request.user)
         evaluation_sheets = usecase.list_by_employee_id(
-            actor, serializer.validated_data
+            to_user_entity(request.user), serializer.validated_data
         )
         return Response([asdict(sheet) for sheet in evaluation_sheets])
 
@@ -46,8 +46,9 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         serializer = EvaluationSheetCreateDtoSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        actor = to_user_entity(request.user)
-        evaluation_sheet = usecase.create(actor, serializer.validated_data)
+        evaluation_sheet = usecase.create(
+            to_user_entity(request.user), serializer.validated_data
+        )
         return Response(asdict(evaluation_sheet), status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["PUT"])
@@ -57,8 +58,9 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         serializer = EvaluationSheetUpdateDtoSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        actor = to_user_entity(request.user)
-        evaluation_sheet = usecase.update_own(actor, serializer.validated_data)
+        evaluation_sheet = usecase.update_own(
+            to_user_entity(request.user), serializer.validated_data
+        )
         return Response(asdict(evaluation_sheet))
 
     @action(detail=True, methods=["PUT"])
@@ -70,6 +72,7 @@ class EvaluationSheetViewSet(viewsets.ViewSet):
         serializer = EvaluationSheetUpdateDtoSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         usecase = EvaluationSheetUsecase()
-        actor = to_user_entity(request.user)
-        evaluation_sheet = usecase.update_by_manager(actor, serializer.validated_data)
+        evaluation_sheet = usecase.update_by_manager(
+            to_user_entity(request.user), serializer.validated_data
+        )
         return Response(asdict(evaluation_sheet))
