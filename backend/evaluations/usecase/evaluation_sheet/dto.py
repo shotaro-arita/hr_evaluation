@@ -27,6 +27,5 @@ class EvaluationSheetScoreDto:
 @dataclass(frozen=True)
 class EvaluationSheetUpdateDto:
     uuid: UUID
-    actor_employee_uuid: UUID
     sheet_scores: list[EvaluationSheetScoreDto]
     is_temporary: bool

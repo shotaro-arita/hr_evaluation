@@ -1,4 +1,5 @@
 from evaluations.admin.employee import *
+from evaluations.admin.user import *
 from evaluations.admin.evaluation_item import *
 from evaluations.admin.evaluation_item_position_relation import *
 from evaluations.admin.evaluation_assignment import *
