@@ -9,11 +9,11 @@ from evaluations.domain.evaluation_sheet.entity import (
 )
 from evaluations.domain.evaluation_sheet.repository import EvaluationSheetRepository
 from evaluations.domain.user.entity import User
+from evaluations.models.evaluation_assignment import DbEvaluationAssignment
 from evaluations.models.evaluation_sheet import (
     DbEvaluationSheet,
     DbEvaluationSheetScore,
 )
-from evaluations.models.evaluation_assignment import DbEvaluationAssignment
 
 
 class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):

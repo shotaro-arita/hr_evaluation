@@ -37,6 +37,7 @@ class Counter:
 def get_random_string() -> str:
     return django_get_random_string(12)
 
+
 def get_random_datetime() -> datetime:
     d: datetime = fake.date_time_between()
     localized = d.astimezone(gettz(settings.TIME_ZONE))

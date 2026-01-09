@@ -14,7 +14,7 @@ class EvaluationItemPositionRelationRepositoryImpl(
 ):
     def find_item_ids_by_position(self, position: PositionEnum) -> list[UUID]:
         return list(
-            DbEvaluationItemPositionRelation.objects.filter(
-                position=position.value
-            ).order_by("order").values_list("evaluation_item_id", flat=True)
+            DbEvaluationItemPositionRelation.objects.filter(position=position.value)
+            .order_by("order")
+            .values_list("evaluation_item_id", flat=True)
         )

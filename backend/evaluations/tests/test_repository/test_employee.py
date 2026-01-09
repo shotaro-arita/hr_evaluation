@@ -1,11 +1,7 @@
 from uuid import uuid4
 
+from evaluations.infrastructure.repository.employee import EmployeeRepositoryImpl
 from evaluations.tests.utils.model_factory import DbEmployeeFactory
-from rest_framework.exceptions import ValidationError
-
-from evaluations.infrastructure.repository.employee import (
-    EmployeeRepositoryImpl,
-)
 from evaluations.tests.utils.testcase import MyAPITestCase
 
 

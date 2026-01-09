@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from evaluations.domain.employee.entity import PositionEnum
 from evaluations.infrastructure.repository.evaluation_item_position_relation import (
     EvaluationItemPositionRelationRepositoryImpl,

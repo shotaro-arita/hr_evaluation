@@ -17,10 +17,6 @@ from evaluations.tests.utils.model_factory import (
     DbPeriodFactory,
 )
 from evaluations.tests.utils.testcase import MyAPITestCase
-from evaluations.models.evaluation_sheet import (
-    DbEvaluationSheet,
-    DbEvaluationSheetScore,
-)
 
 
 class EvaluationSheetRepositoryImplTest(MyAPITestCase):
@@ -84,9 +80,7 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
             user = UserFactory(employee_uuid=employee.uuid)
             sheet_model = DbEvaluationSheetFactory(period=period, employee=employee)
 
-            result = repository.get_by_employee_period(
-                user, employee.uuid, period.uuid
-            )
+            result = repository.get_by_employee_period(user, employee.uuid, period.uuid)
 
             if result is None:
                 raise ValueError("評価シートを取得できませんでした。")

@@ -100,9 +100,7 @@ class DbPeriodFactory(BaseFactory[DbPeriod]):
     uuid = factory.LazyFunction(uuid4)
     name = factory.LazyFunction(get_random_string)
     start_date = factory.LazyFunction(get_random_datetime)
-    end_date = factory.LazyAttribute(
-        lambda obj: obj.start_date + timedelta(days=30)
-    )
+    end_date = factory.LazyAttribute(lambda obj: obj.start_date + timedelta(days=30))
     created_at = factory.LazyFunction(get_random_datetime)
     updated_at = factory.LazyFunction(get_random_datetime)
 

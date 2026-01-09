@@ -1,7 +1,7 @@
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from uuid import UUID
-from datetime import datetime
 
 
 class JobTypeEnum(str, Enum):

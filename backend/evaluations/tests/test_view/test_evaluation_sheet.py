@@ -1,9 +1,10 @@
 from unittest.mock import patch
+from uuid import uuid4
 
 from rest_framework import status
 
-from evaluations.tests.utils.entity_factory import EvaluationSheetFactory, UserFactory
-from evaluations.usecase.evaluation_sheet.usecase import EvaluationSheetUsecase
+from evaluations.tests.utils.entity_factory import EvaluationSheetFactory
+from evaluations.tests.utils.model_factory import DbUserFactory
 from evaluations.tests.utils.testcase import MyAPITestCase
 from evaluations.usecase.evaluation_sheet.dto import (
     EvaluationSheetCreateDto,
@@ -12,8 +13,7 @@ from evaluations.usecase.evaluation_sheet.dto import (
     EvaluationSheetScoreDto,
     EvaluationSheetUpdateDto,
 )
-from uuid import uuid4
-from evaluations.tests.utils.model_factory import DbUserFactory
+from evaluations.usecase.evaluation_sheet.usecase import EvaluationSheetUsecase
 
 
 class SubmissionGroupHospitalViewSetTests(MyAPITestCase):
