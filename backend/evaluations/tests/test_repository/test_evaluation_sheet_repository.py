@@ -7,6 +7,7 @@ from evaluations.infrastructure.repository.evaluation_sheet import (
 from evaluations.tests.utils.entity_factory import (
     EvaluationSheetFactory,
     EvaluationSheetScoreFactory,
+    UserFactory,
 )
 from evaluations.tests.utils.model_factory import (
     DbEmployeeFactory,
@@ -26,8 +27,9 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
     def test_find_by_id(self) -> None:
         with self.subTest("結果なし"):
             repository = EvaluationSheetRepositoryImpl()
+            user = UserFactory()
 
-            result = repository.find_by_id(uuid4())
+            result = repository.find_by_id(user, uuid4())
 
             self.assertIsNone(result)
 
@@ -35,6 +37,7 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
             repository = EvaluationSheetRepositoryImpl()
             period = DbPeriodFactory()
             employee = DbEmployeeFactory()
+            user = UserFactory(employee_uuid=employee.uuid)
             sheet_model = DbEvaluationSheetFactory(
                 period=period,
                 employee=employee,
@@ -55,7 +58,7 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
                 is_manager=True,
             )
 
-            result = repository.find_by_id(sheet_model.uuid)
+            result = repository.find_by_id(user, sheet_model.uuid)
 
             if result is None:
                 raise ValueError("評価シートを取得できませんでした。")
@@ -68,8 +71,9 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
     def test_get_by_employee_period(self) -> None:
         with self.subTest("結果なし"):
             repository = EvaluationSheetRepositoryImpl()
+            user = UserFactory()
 
-            result = repository.get_by_employee_period(uuid4(), uuid4())
+            result = repository.get_by_employee_period(user, uuid4(), uuid4())
 
             self.assertIsNone(result)
 
@@ -77,9 +81,12 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
             repository = EvaluationSheetRepositoryImpl()
             period = DbPeriodFactory()
             employee = DbEmployeeFactory()
+            user = UserFactory(employee_uuid=employee.uuid)
             sheet_model = DbEvaluationSheetFactory(period=period, employee=employee)
 
-            result = repository.get_by_employee_period(employee.uuid, period.uuid)
+            result = repository.get_by_employee_period(
+                user, employee.uuid, period.uuid
+            )
 
             if result is None:
                 raise ValueError("評価シートを取得できませんでした。")

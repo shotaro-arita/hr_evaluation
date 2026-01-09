@@ -12,6 +12,7 @@ from evaluations.tests.utils.model_factory import (
     DbEvaluationSheetScoreFactory,
     DbPeriodFactory,
 )
+from evaluations.tests.utils.entity_factory import UserFactory
 from evaluations.tests.utils.testcase import MyAPITestCase
 
 
@@ -19,8 +20,9 @@ class EvaluationSheetQueryServiceImplTest(MyAPITestCase):
     def test_find_by_id(self) -> None:
         with self.subTest("結果なし"):
             query_service = EvaluationSheetQueryServiceImpl()
+            user = UserFactory()
 
-            result = query_service.find_by_id(uuid4())
+            result = query_service.find_by_id(user, uuid4())
 
             self.assertIsNone(result)
 
@@ -28,6 +30,7 @@ class EvaluationSheetQueryServiceImplTest(MyAPITestCase):
             query_service = EvaluationSheetQueryServiceImpl()
             period = DbPeriodFactory(name="2024 Q1")
             employee = DbEmployeeFactory(employee_code="EMP001", name="Alice")
+            user = UserFactory(employee_uuid=employee.uuid)
             sheet_model = DbEvaluationSheetFactory(
                 period=period,
                 employee=employee,
@@ -66,7 +69,7 @@ class EvaluationSheetQueryServiceImplTest(MyAPITestCase):
                 is_manager=True,
             )
 
-            result = query_service.find_by_id(sheet_model.uuid)
+            result = query_service.find_by_id(user, sheet_model.uuid)
 
             if result is None:
                 raise ValueError("評価シートを取得できませんでした。")
@@ -100,6 +103,7 @@ class EvaluationSheetQueryServiceImplTest(MyAPITestCase):
         with self.subTest("結果あり"):
             query_service = EvaluationSheetQueryServiceImpl()
             employee = DbEmployeeFactory()
+            user = UserFactory(employee_uuid=employee.uuid)
             other_employee = DbEmployeeFactory()
             period1 = DbPeriodFactory()
             period2 = DbPeriodFactory()
@@ -107,7 +111,7 @@ class EvaluationSheetQueryServiceImplTest(MyAPITestCase):
             sheet2 = DbEvaluationSheetFactory(period=period2, employee=employee)
             DbEvaluationSheetFactory(period=period1, employee=other_employee)
 
-            result = query_service.get_list_by_employee_id(employee.uuid)
+            result = query_service.get_list_by_employee_id(user, employee.uuid)
 
             result_ids = {sheet.uuid for sheet in result}
             self.assertEqual(result_ids, {sheet1.uuid, sheet2.uuid})

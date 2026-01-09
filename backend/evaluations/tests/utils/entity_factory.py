@@ -9,6 +9,7 @@ from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheetScore,
     EvaluationSheetStatusEnum,
 )
+from evaluations.domain.user.entity import User
 from django.utils.crypto import get_random_string as django_get_random_string
 from faker import Faker
 from dateutil.tz import gettz
@@ -82,3 +83,13 @@ class EvaluationAssignmentFactory(EvaluationAssignment):
     role: AssignmentRoleEnum = AssignmentRoleEnum.MANAGER
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
+
+
+@dataclass(frozen=True)
+class UserFactory(User):
+    uuid: UUID = field(default_factory=uuid4)
+    employee_uuid: UUID = field(default_factory=uuid4)
+    employee_code: str = field(default_factory=get_random_string)
+    password: str = field(default_factory=get_random_string)
+    is_active: bool = True
+    name: str = field(default_factory=get_random_string)

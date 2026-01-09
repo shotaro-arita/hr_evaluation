@@ -15,14 +15,16 @@ class UserManager(BaseUserManager["DbUser"]):
     def create_user(
         self,
         employee_code: str,
-        employee: DbEmployee | None = None,
+        employee: DbEmployee,
         password: str | None = None,
         name: str | None = None,
         **extra_fields: object,
     ) -> "DbUser":
         if not employee_code:
             raise ValueError("employee_code is required.")
-        if not name and employee is not None:
+        if employee is None:
+            raise ValueError("employee is required.")
+        if not name:
             name = employee.name
         if not name:
             raise ValueError("name is required.")
@@ -37,7 +39,7 @@ class UserManager(BaseUserManager["DbUser"]):
     def create_superuser(
         self,
         employee_code: str,
-        employee: DbEmployee | None = None,
+        employee: DbEmployee,
         password: str | None = None,
         name: str | None = None,
         **extra_fields: object,
@@ -54,13 +56,10 @@ class UserManager(BaseUserManager["DbUser"]):
 
 class DbUser(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    # admin専用ユーザは従業員に紐づかないためnullを許容
     employee = models.OneToOneField(
         DbEmployee,
         on_delete=models.CASCADE,
         related_name="user",
-        null=True,
-        blank=True,
     )
     employee_code = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
@@ -72,7 +71,7 @@ class DbUser(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "employee_code"
-    REQUIRED_FIELDS = ["name"]
+    REQUIRED_FIELDS = ["employee", "name"]
 
     class Meta:
         ordering = ["-created_at"]

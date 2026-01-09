@@ -8,23 +8,37 @@ from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheetScore,
 )
 from evaluations.domain.evaluation_sheet.repository import EvaluationSheetRepository
+from evaluations.domain.user.entity import User
 from evaluations.models.evaluation_sheet import (
     DbEvaluationSheet,
     DbEvaluationSheetScore,
 )
+from evaluations.models.evaluation_assignment import DbEvaluationAssignment
 
 
 class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
-    def find_by_id(self, id: UUID) -> EvaluationSheet | None:
+    def _get_allowed_employee_ids(self, user: User) -> set[UUID]:
+        manager_targets = DbEvaluationAssignment.objects.filter(
+            manager_employee_id=user.employee_uuid
+        ).values_list("target_employee_id", flat=True)
+        return {user.employee_uuid, *set(manager_targets)}
+
+    def find_by_id(self, user: User, id: UUID) -> EvaluationSheet | None:
+        allowed_employee_ids = self._get_allowed_employee_ids(user)
         try:
-            sheet = DbEvaluationSheet.objects.prefetch_related("scores").get(uuid=id)
+            sheet = DbEvaluationSheet.objects.prefetch_related("scores").get(
+                uuid=id, employee_id__in=allowed_employee_ids
+            )
         except DbEvaluationSheet.DoesNotExist:
             return None
         return sheet.to_entity()
 
     def get_by_employee_period(
-        self, employee_id: UUID, period_id: UUID
+        self, user: User, employee_id: UUID, period_id: UUID
     ) -> EvaluationSheet | None:
+        allowed_employee_ids = self._get_allowed_employee_ids(user)
+        if employee_id not in allowed_employee_ids:
+            return None
         try:
             sheet = DbEvaluationSheet.objects.prefetch_related("scores").get(
                 employee_id=employee_id, period_id=period_id

@@ -19,6 +19,7 @@ from evaluations.models.evaluation_sheet import (
     DbEvaluationSheetScore,
 )
 from evaluations.models.period import DbPeriod
+from evaluations.models.user import DbUser
 from evaluations.tests.utils.entity_factory import (
     Counter,
     get_random_datetime,
@@ -127,5 +128,20 @@ class DbEvaluationSheetScoreFactory(BaseFactory[DbEvaluationSheetScore]):
     evaluation_item = factory.SubFactory(DbEvaluationItemFactory)
     score = factory.LazyFunction(lambda: Counter.get() % 5 + 1)
     is_manager = False
+    created_at = factory.LazyFunction(get_random_datetime)
+    updated_at = factory.LazyFunction(get_random_datetime)
+
+
+class DbUserFactory(BaseFactory[DbUser]):
+    class Meta:
+        model = DbUser
+
+    uuid = factory.LazyFunction(uuid4)
+    employee = factory.SubFactory(DbEmployeeFactory)
+    employee_code = factory.LazyFunction(get_random_string)
+    name = factory.LazyFunction(get_random_string)
+    password = factory.LazyFunction(get_random_string)
+    is_staff = False
+    is_active = True
     created_at = factory.LazyFunction(get_random_datetime)
     updated_at = factory.LazyFunction(get_random_datetime)

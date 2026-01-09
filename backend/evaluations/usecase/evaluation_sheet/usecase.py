@@ -44,7 +44,9 @@ class EvaluationSheetUsecase:
     def retrieve(
         self, request_user: User, dto: EvaluationSheetIdDto
     ) -> EvaluationSheetRetrieveModel:
-        evaluation_sheet = self.evaluation_sheet_query_service.find_by_id(dto.uuid)
+        evaluation_sheet = self.evaluation_sheet_query_service.find_by_id(
+            request_user, dto.uuid
+        )
         if evaluation_sheet is None:
             raise ValidationError("評価シートが見つかりません。")
         return evaluation_sheet
@@ -53,7 +55,7 @@ class EvaluationSheetUsecase:
         self, request_user: User, dto: EvaluationSheetEmployeeIdDto
     ) -> list[EvaluationSheetRetrieveModel]:
         evaluation_sheets = self.evaluation_sheet_query_service.get_list_by_employee_id(
-            dto.employee_id
+            request_user, dto.employee_id
         )
         return evaluation_sheets
 
@@ -61,7 +63,7 @@ class EvaluationSheetUsecase:
         self, request_user: User, dto: EvaluationSheetCreateDto
     ) -> EvaluationSheet:
         evaluation_sheet = self.evaluation_sheet_repository.get_by_employee_period(
-            employee_id=dto.employee_id, period_id=dto.period_id
+            request_user, employee_id=dto.employee_id, period_id=dto.period_id
         )
         if evaluation_sheet:
             raise ValidationError("すでに評価シートは存在しています。")
@@ -87,11 +89,11 @@ class EvaluationSheetUsecase:
     def update_own(
         self, request_user: User, dto: EvaluationSheetUpdateDto
     ) -> EvaluationSheet:
-        evaluation_sheet = self.evaluation_sheet_repository.find_by_id(id=dto.uuid)
+        evaluation_sheet = self.evaluation_sheet_repository.find_by_id(
+            request_user, id=dto.uuid
+        )
         if not evaluation_sheet:
             raise ValidationError("評価シートが存在しません。")
-        if request_user.employee_uuid is None:
-            raise ValidationError("リクエストユーザが従業員に紐づいていません。")
         evaluation_sheet.check_update_own(request_user.employee_uuid)
 
         employee = self.employee_repository.find_by_id(
@@ -115,7 +117,9 @@ class EvaluationSheetUsecase:
     def update_by_manager(
         self, request_user: User, dto: EvaluationSheetUpdateDto
     ) -> EvaluationSheet:
-        evaluation_sheet = self.evaluation_sheet_repository.find_by_id(id=dto.uuid)
+        evaluation_sheet = self.evaluation_sheet_repository.find_by_id(
+            request_user, id=dto.uuid
+        )
         if not evaluation_sheet:
             raise ValidationError("評価シートが存在しません。")
 

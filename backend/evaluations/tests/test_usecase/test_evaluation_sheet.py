@@ -14,6 +14,7 @@ from evaluations.tests.utils.entity_factory import (
     EvaluationSheetFactory,
     EvaluationAssignmentFactory,
     EvaluationSheetScoreFactory,
+    UserFactory,
 )
 from evaluations.tests.utils.testcase import MyAPITestCase
 from rest_framework.exceptions import ValidationError
@@ -28,9 +29,10 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
                 return_value=None
             )
             dto = EvaluationSheetIdDto(uuid4())
+            request_user = UserFactory()
 
             with self.assertRaises(ValidationError) as e:
-                usecase.retrieve(dto)
+                usecase.retrieve(request_user, dto)
 
             self.assertEqual(e.exception.detail, ["評価シートが見つかりません。"])
 
@@ -41,8 +43,9 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
                 return_value=entity
             )
             dto = EvaluationSheetIdDto(uuid4())
+            request_user = UserFactory()
 
-            result = usecase.retrieve(dto)
+            result = usecase.retrieve(request_user, dto)
 
             self.assertIsNotNone(result)
 
@@ -54,8 +57,9 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
                 return_value=expected
             )
             dto = EvaluationSheetEmployeeIdDto(uuid4())
+            request_user = UserFactory()
 
-            result = usecase.list_by_employee_id(dto)
+            result = usecase.list_by_employee_id(request_user, dto)
 
             self.assertEqual(result, expected)
 
@@ -66,9 +70,10 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
                 return_value=EvaluationSheetFactory()
             )
             dto = EvaluationSheetCreateDto(uuid4(), uuid4())
+            request_user = UserFactory()
 
             with self.assertRaises(ValidationError) as e:
-                usecase.create(dto)
+                usecase.create(request_user, dto)
 
             self.assertEqual(e.exception.detail, ["すでに評価シートは存在しています。"])
 
@@ -93,8 +98,9 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
                 return_value=created_sheet
             )
             dto = EvaluationSheetCreateDto(employee_id, period_id)
+            request_user = UserFactory(employee_uuid=employee_id)
 
-            result = usecase.create(dto)
+            result = usecase.create(request_user, dto)
 
             self.assertEqual(result, created_sheet)
 
@@ -104,10 +110,11 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             usecase.evaluation_sheet_repository.find_by_id = MagicMock(
                 return_value=None
             )
-            dto = EvaluationSheetUpdateDto(uuid4(), uuid4(), [], True)
+            dto = EvaluationSheetUpdateDto(uuid4(), [], True)
+            request_user = UserFactory()
 
             with self.assertRaises(ValidationError) as e:
-                usecase.update_own(dto)
+                usecase.update_own(request_user, dto)
 
             self.assertEqual(e.exception.detail, ["評価シートが存在しません。"])
 
@@ -117,10 +124,11 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             usecase.evaluation_sheet_repository.find_by_id = MagicMock(
                 return_value=entity
             )
-            dto = EvaluationSheetUpdateDto(uuid4(), uuid4(), [], True)
+            dto = EvaluationSheetUpdateDto(uuid4(), [], True)
+            request_user = UserFactory(employee_uuid=uuid4())
 
             with self.assertRaises(ValidationError) as e:
-                usecase.update_own(dto)
+                usecase.update_own(request_user, dto)
 
             self.assertEqual(
                 e.exception.detail, ["更新者と評価シートの対象者が一致していません。"]
@@ -134,10 +142,11 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
                 return_value=entity
             )
             usecase.employee_repository.find_by_id = MagicMock(return_value=None)
-            dto = EvaluationSheetUpdateDto(uuid4(), employee_id, [], True)
+            dto = EvaluationSheetUpdateDto(uuid4(), [], True)
+            request_user = UserFactory(employee_uuid=employee_id)
 
             with self.assertRaises(ValidationError) as e:
-                usecase.update_own(dto)
+                usecase.update_own(request_user, dto)
 
             self.assertEqual(e.exception.detail, ["評価対象の従業員が存在しません。"])
 
@@ -161,15 +170,15 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             usecase.evaluation_sheet_repository.update = MagicMock(return_value=entity)
             dto = EvaluationSheetUpdateDto(
                 uuid4(),
-                employee_id,
                 [
                     EvaluationSheetScoreDto(item_id1, 3),
                     EvaluationSheetScoreDto(item_id2, 4),
                 ],
                 False,
             )
+            actor = UserFactory(employee_uuid=employee_id)
 
-            result = usecase.update_own(dto)
+            result = usecase.update_own(actor, dto)
 
             self.assertIsNotNone(result)
             self.assertEqual(result.uuid, entity.uuid)
@@ -184,10 +193,11 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             usecase.evaluation_sheet_repository.find_by_id = MagicMock(
                 return_value=None
             )
-            dto = EvaluationSheetUpdateDto(uuid4(), uuid4(), [], True)
+            dto = EvaluationSheetUpdateDto(uuid4(), [], True)
+            request_user = UserFactory()
 
             with self.assertRaises(ValidationError) as e:
-                usecase.update_by_manager(dto)
+                usecase.update_by_manager(request_user, dto)
 
             self.assertEqual(e.exception.detail, ["評価シートが存在しません。"])
 
@@ -199,10 +209,11 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
                 return_value=entity
             )
             usecase.employee_repository.find_by_id = MagicMock(return_value=None)
-            dto = EvaluationSheetUpdateDto(uuid4(), uuid4(), [], True)
+            dto = EvaluationSheetUpdateDto(uuid4(), [], True)
+            request_user = UserFactory()
 
             with self.assertRaises(ValidationError) as e:
-                usecase.update_by_manager(dto)
+                usecase.update_by_manager(request_user, dto)
 
             self.assertEqual(e.exception.detail, ["評価対象の従業員が存在しません。"])
 
@@ -219,10 +230,11 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             usecase.evaluation_assignment_repository.find_by_target_employee_id = (
                 MagicMock(return_value=None)
             )
-            dto = EvaluationSheetUpdateDto(uuid4(), uuid4(), [], True)
+            dto = EvaluationSheetUpdateDto(uuid4(), [], True)
+            request_user = UserFactory()
 
             with self.assertRaises(ValidationError) as e:
-                usecase.update_by_manager(dto)
+                usecase.update_by_manager(request_user, dto)
 
             self.assertEqual(
                 e.exception.detail, ["この従業員は評価者が割り当てられていません。"]
@@ -241,10 +253,11 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             usecase.evaluation_assignment_repository.find_by_target_employee_id = (
                 MagicMock(return_value=assignment)
             )
-            dto = EvaluationSheetUpdateDto(uuid4(), uuid4(), [], True)
+            dto = EvaluationSheetUpdateDto(uuid4(), [], True)
+            request_user = UserFactory(employee_uuid=uuid4())
 
             with self.assertRaises(ValidationError) as e:
-                usecase.update_by_manager(dto)
+                usecase.update_by_manager(request_user, dto)
 
             self.assertEqual(e.exception.detail, ["この従業員の評価者ではありません。"])
 
@@ -279,15 +292,15 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             usecase.evaluation_sheet_repository.update = MagicMock(return_value=entity)
             dto = EvaluationSheetUpdateDto(
                 uuid4(),
-                manager_id,
                 [
                     EvaluationSheetScoreDto(item_id1, 3),
                     EvaluationSheetScoreDto(item_id2, 4),
                 ],
                 False,
             )
+            request_user = UserFactory(employee_uuid=manager_id)
 
-            result = usecase.update_by_manager(dto)
+            result = usecase.update_by_manager(request_user, dto)
 
             self.assertIsNotNone(result)
             self.assertEqual(result.uuid, entity.uuid)

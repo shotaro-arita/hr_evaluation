@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 
+from evaluations.domain.user.entity import User
 from evaluations.domain.evaluation_item.entity import EvaluationItemCategory
 from evaluations.utils.pagination import PaginationQueryDto
 from uuid import UUID
@@ -62,12 +63,12 @@ class EvaluationSheetPaginationQueryDto(
 
 class EvaluationSheetQueryService(ABC):
     @abstractmethod
-    def find_by_id(self, id: UUID) -> EvaluationSheetRetrieveModel | None:
+    def find_by_id(self, user: User, id: UUID) -> EvaluationSheetRetrieveModel | None:
         raise NotImplementedError
 
     @abstractmethod
     def get_list_by_employee_id(
-        self, employee_id: UUID
+        self, user: User, employee_id: UUID
     ) -> list[EvaluationSheetRetrieveModel]:
         # TODO リスト用のリードモデル作成
         raise NotImplementedError

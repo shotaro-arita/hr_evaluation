@@ -2,29 +2,41 @@ from uuid import UUID
 
 from evaluations.domain.evaluation_item.entity import EvaluationItemCategory
 from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatusEnum
+from evaluations.models.evaluation_assignment import DbEvaluationAssignment
 from evaluations.models.evaluation_sheet import DbEvaluationSheet
 from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationScoreRetrieveModel,
     EvaluationSheetQueryService,
     EvaluationSheetRetrieveModel,
 )
+from evaluations.domain.user.entity import User
 
 
 class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
-    def find_by_id(self, id: UUID) -> EvaluationSheetRetrieveModel | None:
+    def _get_allowed_employee_ids(self, user: User) -> set[UUID]:
+        manager_targets = DbEvaluationAssignment.objects.filter(
+            manager_employee_id=user.employee_uuid
+        ).values_list("target_employee_id", flat=True)
+        return {user.employee_uuid, *set(manager_targets)}
+
+    def find_by_id(self, user: User, id: UUID) -> EvaluationSheetRetrieveModel | None:
+        allowed_employee_ids = self._get_allowed_employee_ids(user)
         try:
             sheet_model = (
                 DbEvaluationSheet.objects.select_related("period", "employee")
                 .prefetch_related("scores__evaluation_item")
-                .get(uuid=id)
+                .get(uuid=id, employee_id__in=allowed_employee_ids)
             )
         except DbEvaluationSheet.DoesNotExist:
             return None
         return self._to_retrieve_model(sheet_model)
 
     def get_list_by_employee_id(
-        self, employee_id: UUID
+        self, user: User, employee_id: UUID
     ) -> list[EvaluationSheetRetrieveModel]:
+        allowed_employee_ids = self._get_allowed_employee_ids(user)
+        if employee_id not in allowed_employee_ids:
+            return []
         sheet_models = (
             DbEvaluationSheet.objects.select_related("period", "employee")
             .prefetch_related("scores__evaluation_item")
