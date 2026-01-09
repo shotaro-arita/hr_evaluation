@@ -1,8 +1,6 @@
 from uuid import UUID
 
 from django.db import transaction
-from rest_framework.exceptions import ValidationError
-
 from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheet,
     EvaluationSheetScore,
@@ -14,6 +12,7 @@ from evaluations.models.evaluation_sheet import (
     DbEvaluationSheet,
     DbEvaluationSheetScore,
 )
+from rest_framework.exceptions import ValidationError
 
 
 class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
@@ -51,7 +50,7 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
         self,
         evaluation_sheet_model: DbEvaluationSheet,
         evaluation_sheet: EvaluationSheet,
-    ) -> EvaluationSheet:
+    ) -> DbEvaluationSheet:
         evaluation_sheet_model.period_id = evaluation_sheet.period_uuid
         evaluation_sheet_model.employee_id = evaluation_sheet.employee_uuid
         evaluation_sheet_model.status = evaluation_sheet.status.value

@@ -1,8 +1,6 @@
 from unittest.mock import patch
 from uuid import uuid4
 
-from rest_framework import status
-
 from evaluations.tests.utils.entity_factory import EvaluationSheetFactory
 from evaluations.tests.utils.model_factory import DbUserFactory
 from evaluations.tests.utils.testcase import MyAPITestCase
@@ -14,6 +12,7 @@ from evaluations.usecase.evaluation_sheet.dto import (
     EvaluationSheetUpdateDto,
 )
 from evaluations.usecase.evaluation_sheet.usecase import EvaluationSheetUsecase
+from rest_framework import status
 
 
 class SubmissionGroupHospitalViewSetTests(MyAPITestCase):
@@ -25,7 +24,7 @@ class SubmissionGroupHospitalViewSetTests(MyAPITestCase):
             mock.return_value = evaluation_sheet
             user = DbUserFactory()
             self.client.force_authenticate(user=user)
-            user_entity = user.to_entity
+            user_entity = user.to_entity()
 
             response = self.client.get(f"{self.url}/{evaluation_sheet.uuid}/")
 

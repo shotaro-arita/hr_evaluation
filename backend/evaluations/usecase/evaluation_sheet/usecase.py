@@ -1,6 +1,4 @@
 import inject
-from rest_framework.exceptions import ValidationError
-
 from evaluations.domain.employee.repository import EmployeeRepository
 from evaluations.domain.evaluation_assignment.repository import (
     EvaluationAssignmentRepository,
@@ -21,6 +19,7 @@ from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationSheetQueryService,
     EvaluationSheetRetrieveModel,
 )
+from rest_framework.exceptions import ValidationError
 
 
 class EvaluationSheetUsecase:
@@ -81,7 +80,7 @@ class EvaluationSheetUsecase:
         evaluation_sheet = EvaluationSheet.initialize(
             period_uuid=dto.period_id,
             employee_uuid=dto.employee_id,
-            evaluation_item_ids=evaluation_item_ids,
+            evaluation_item_ids=list(evaluation_item_ids),
         )
         evaluation_sheet = self.evaluation_sheet_repository.create(evaluation_sheet)
         return evaluation_sheet

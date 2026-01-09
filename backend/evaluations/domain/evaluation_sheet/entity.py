@@ -98,7 +98,7 @@ class EvaluationSheet:
         return new_scores
 
     def save_temporary_own_score(
-        self, own_evaluation_score_dict: dict[UUID, int]
+        self, own_evaluation_score_dict: dict[UUID, int | None]
     ) -> "EvaluationSheet":
         # TODO 評価ステータスの遷移
         new_scores = self._update_sheet_score_from_dict(
@@ -111,7 +111,7 @@ class EvaluationSheet:
         return self
 
     def complete_own_score(
-        self, own_evaluation_score_dict: dict[UUID, int]
+        self, own_evaluation_score_dict: dict[UUID, int | None]
     ) -> "EvaluationSheet":
         new_scores = self._update_sheet_score_from_dict(
             self.own_scores, own_evaluation_score_dict, False
