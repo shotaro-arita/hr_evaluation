@@ -1,0 +1,18 @@
+{
+  "employees": [
+    {
+      "uuid": "00000000-0000-0000-0000-000000000001",
+      "employee_code": "E0001",
+      "name": "山田太郎",
+      "position": "JR",
+      "job_type": "SD"
+    },
+    {
+      "uuid": "00000000-0000-0000-0000-000000000002",
+      "employee_code": "E0002",
+      "name": "鈴木花子",
+      "position": "EN",
+      "job_type": "IF"
+    }
+  ]
+}

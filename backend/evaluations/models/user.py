@@ -39,7 +39,7 @@ class UserManager(BaseUserManager["DbUser"]):
     def create_superuser(
         self,
         employee_code: str,
-        employee: DbEmployee,
+        employee: DbEmployee | None = None,
         password: str | None = None,
         name: str | None = None,
         **extra_fields: object,
@@ -47,6 +47,11 @@ class UserManager(BaseUserManager["DbUser"]):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
+        if employee is None:
+            try:
+                employee = DbEmployee.objects.get(employee_code=employee_code)
+            except DbEmployee.DoesNotExist as exc:
+                raise ValueError("employee is required.") from exc
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
@@ -71,7 +76,7 @@ class DbUser(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "employee_code"
-    REQUIRED_FIELDS = ["employee", "name"]
+    REQUIRED_FIELDS = ["name"]
 
     class Meta:
         ordering = ["-created_at"]
