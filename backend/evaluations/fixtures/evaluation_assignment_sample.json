@@ -1,0 +1,10 @@
+{
+  "evaluation_assignments": [
+    {
+      "uuid": "30000000-0000-0000-0000-000000000001",
+      "target_employee_code": "E0001",
+      "manager_employee_code": "E0002",
+      "role": "MANAGER"
+    }
+  ]
+}

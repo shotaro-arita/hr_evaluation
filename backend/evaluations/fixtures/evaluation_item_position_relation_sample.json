@@ -1,0 +1,16 @@
+{
+  "evaluation_item_position_relations": [
+    {
+      "uuid": "20000000-0000-0000-0000-000000000001",
+      "position": "JR",
+      "evaluation_item_uuid": "10000000-0000-0000-0000-000000000001",
+      "order": 1
+    },
+    {
+      "uuid": "20000000-0000-0000-0000-000000000002",
+      "position": "EN",
+      "evaluation_item_uuid": "10000000-0000-0000-0000-000000000002",
+      "order": 1
+    }
+  ]
+}

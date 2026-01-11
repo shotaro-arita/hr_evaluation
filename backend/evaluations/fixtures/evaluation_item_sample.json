@@ -1,0 +1,26 @@
+{
+  "evaluation_items": [
+    {
+      "uuid": "10000000-0000-0000-0000-000000000001",
+      "title": "Quality of Work",
+      "category": "TECHNICAL_SOFTWARE",
+      "description": "Accuracy and completeness of work.",
+      "criteria_1": "Major issues",
+      "criteria_2": "Needs improvement",
+      "criteria_3": "Meets expectations",
+      "criteria_4": "Above expectations",
+      "criteria_5": "Outstanding"
+    },
+    {
+      "uuid": "10000000-0000-0000-0000-000000000002",
+      "title": "Communication",
+      "category": "ATTITUDE_SKILLS",
+      "description": "Clear and proactive communication.",
+      "criteria_1": "Rarely communicates",
+      "criteria_2": "Inconsistent",
+      "criteria_3": "Adequate",
+      "criteria_4": "Clear and timely",
+      "criteria_5": "Exceptional"
+    }
+  ]
+}
