@@ -106,7 +106,7 @@ class EvaluationSheetUsecase:
             for sheet_score in dto.sheet_scores
         }
         if dto.is_temporary:
-            evaluation_sheet = evaluation_sheet.save_temporary_manager_score(score_dict)
+            evaluation_sheet = evaluation_sheet.save_temporary_own_score(score_dict)
         else:
             evaluation_sheet = evaluation_sheet.complete_own_score(score_dict)
 
