@@ -3,6 +3,11 @@ from inject import Binder
 from evaluations.infrastructure.query_service.evaluation_sheet import (
     EvaluationSheetQueryServiceImpl,
 )
+from evaluations.infrastructure.query_service.evaluation_assignment import (
+    EvaluationAssignmentQueryServiceImpl,
+)
+from evaluations.infrastructure.query_service.period import PeriodQueryServiceImpl
+from evaluations.infrastructure.query_service.user import UserQueryServiceImpl
 from evaluations.infrastructure.repository.employee import (
     EmployeeRepositoryImpl,
 )
@@ -18,6 +23,11 @@ from evaluations.infrastructure.repository.evaluation_sheet import (
 from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationSheetQueryService,
 )
+from evaluations.usecase.evaluation_assignment.query_service import (
+    EvaluationAssignmentQueryService,
+)
+from evaluations.usecase.period.query_service import PeriodQueryService
+from evaluations.usecase.user.query_service import UserQueryService
 
 
 from evaluations.domain.employee.repository import EmployeeRepository
@@ -42,3 +52,8 @@ def injection_config(binder: Binder) -> None:
 
     # QueryService
     binder.bind(EvaluationSheetQueryService, EvaluationSheetQueryServiceImpl())
+    binder.bind(
+        EvaluationAssignmentQueryService, EvaluationAssignmentQueryServiceImpl()
+    )
+    binder.bind(PeriodQueryService, PeriodQueryServiceImpl())
+    binder.bind(UserQueryService, UserQueryServiceImpl())

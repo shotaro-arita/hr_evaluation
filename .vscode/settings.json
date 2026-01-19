@@ -4,8 +4,8 @@
   "python.analysis.useLibraryCodeForTypes": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": true,
-    "source.fixAll": true
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit"
   },
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff"

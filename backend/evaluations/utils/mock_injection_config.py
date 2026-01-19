@@ -17,10 +17,20 @@ from evaluations.tests.repository import (
     EvaluationItemPositionRelationRepositoryMock,
     EvaluationSheetRepositoryMock,
 )
-from evaluations.tests.query_service import EvaluationSheetQueryServiceMock
+from evaluations.tests.query_service import (
+    EvaluationAssignmentQueryServiceMock,
+    EvaluationSheetQueryServiceMock,
+    PeriodQueryServiceMock,
+    UserQueryServiceMock,
+)
 from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationSheetQueryService,
 )
+from evaluations.usecase.evaluation_assignment.query_service import (
+    EvaluationAssignmentQueryService,
+)
+from evaluations.usecase.period.query_service import PeriodQueryService
+from evaluations.usecase.user.query_service import UserQueryService
 
 
 def mock_injection_config(binder: Binder) -> None:
@@ -35,3 +45,8 @@ def mock_injection_config(binder: Binder) -> None:
 
     # query_service
     binder.bind(EvaluationSheetQueryService, EvaluationSheetQueryServiceMock)
+    binder.bind(
+        EvaluationAssignmentQueryService, EvaluationAssignmentQueryServiceMock
+    )
+    binder.bind(PeriodQueryService, PeriodQueryServiceMock)
+    binder.bind(UserQueryService, UserQueryServiceMock)
