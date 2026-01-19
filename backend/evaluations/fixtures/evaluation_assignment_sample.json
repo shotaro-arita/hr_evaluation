@@ -3,7 +3,91 @@
     {
       "uuid": "30000000-0000-0000-0000-000000000001",
       "target_employee_code": "E0001",
-      "manager_employee_code": "E0002",
+      "manager_employee_code": "E0013",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000002",
+      "target_employee_code": "E0002",
+      "manager_employee_code": "E0013",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000003",
+      "target_employee_code": "E0003",
+      "manager_employee_code": "E0013",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000004",
+      "target_employee_code": "E0004",
+      "manager_employee_code": "E0013",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000005",
+      "target_employee_code": "E0015",
+      "manager_employee_code": "E0013",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000006",
+      "target_employee_code": "E0005",
+      "manager_employee_code": "E0014",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000007",
+      "target_employee_code": "E0006",
+      "manager_employee_code": "E0014",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000008",
+      "target_employee_code": "E0007",
+      "manager_employee_code": "E0014",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000009",
+      "target_employee_code": "E0008",
+      "manager_employee_code": "E0014",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000010",
+      "target_employee_code": "E0013",
+      "manager_employee_code": "E0014",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000011",
+      "target_employee_code": "E0009",
+      "manager_employee_code": "E0015",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000012",
+      "target_employee_code": "E0010",
+      "manager_employee_code": "E0015",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000013",
+      "target_employee_code": "E0011",
+      "manager_employee_code": "E0015",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000014",
+      "target_employee_code": "E0012",
+      "manager_employee_code": "E0015",
+      "role": "MANAGER"
+    },
+    {
+      "uuid": "30000000-0000-0000-0000-000000000015",
+      "target_employee_code": "E0014",
+      "manager_employee_code": "E0015",
       "role": "MANAGER"
     }
   ]

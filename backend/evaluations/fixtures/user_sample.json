@@ -1,0 +1,102 @@
+{
+  "users": [
+    {
+      "uuid": "50000000-0000-0000-0000-000000000002",
+      "employee_code": "E0002",
+      "name": "鈴木花子",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000003",
+      "employee_code": "E0003",
+      "name": "佐藤健",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000004",
+      "employee_code": "E0004",
+      "name": "高橋美咲",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000005",
+      "employee_code": "E0005",
+      "name": "田中大輔",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000006",
+      "employee_code": "E0006",
+      "name": "伊藤彩香",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000007",
+      "employee_code": "E0007",
+      "name": "渡辺翔太",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000008",
+      "employee_code": "E0008",
+      "name": "小林陽子",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000009",
+      "employee_code": "E0009",
+      "name": "加藤直樹",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000010",
+      "employee_code": "E0010",
+      "name": "吉田優子",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000011",
+      "employee_code": "E0011",
+      "name": "山本一郎",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000012",
+      "employee_code": "E0012",
+      "name": "中村真由",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000013",
+      "employee_code": "E0013",
+      "name": "石井健太",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000014",
+      "employee_code": "E0014",
+      "name": "斎藤由美",
+      "password": "password123",
+      "is_active": true
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000015",
+      "employee_code": "E0015",
+      "name": "木村亮",
+      "password": "password123",
+      "is_active": true
+    }
+  ]
+}
