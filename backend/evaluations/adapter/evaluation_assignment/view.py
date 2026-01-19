@@ -15,5 +15,5 @@ class EvaluationAssignmentViewSet(viewsets.ViewSet):
 
     def list(self, request: Request) -> Response:
         usecase = EvaluationAssignmentUsecase()
-        targets = usecase.get_list_manager_targets(to_user_entity(request.user))
+        targets = usecase.get_manager_targets(to_user_entity(request.user))
         return Response([asdict(target) for target in targets])

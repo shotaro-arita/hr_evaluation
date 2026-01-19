@@ -10,5 +10,5 @@ class PeriodUsecase:
     def __init__(self, period_query_service: PeriodQueryService):
         self.period_query_service = period_query_service
 
-    def get_list(self, request_user: User) -> PeriodListModel:
+    def get_periods(self, request_user: User) -> PeriodListModel:
         return self.period_query_service.get_list(request_user, timezone.now())

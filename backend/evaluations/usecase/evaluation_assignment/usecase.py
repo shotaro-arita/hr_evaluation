@@ -14,7 +14,7 @@ class EvaluationAssignmentUsecase:
     ):
         self.evaluation_assignment_query_service = evaluation_assignment_query_service
 
-    def get_list_manager_targets(self, request_user: User) -> list[ManagerTargetModel]:
+    def get_manager_targets(self, request_user: User) -> list[ManagerTargetModel]:
         return self.evaluation_assignment_query_service.get_manager_targets(
             request_user
         )

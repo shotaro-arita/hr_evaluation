@@ -13,5 +13,5 @@ class PeriodViewSet(viewsets.ViewSet):
 
     def list(self, request: Request) -> Response:
         usecase = PeriodUsecase()
-        period_list = usecase.get_list(to_user_entity(request.user))
+        period_list = usecase.get_periods(to_user_entity(request.user))
         return Response(asdict(period_list))
