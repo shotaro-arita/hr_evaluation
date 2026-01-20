@@ -131,4 +131,5 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "USER_ID_FIELD": "uuid",
+    "ACCESS_TOKEN_LIFETIME": 60 * 60,
 }

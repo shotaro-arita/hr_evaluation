@@ -17,6 +17,9 @@ export const requestJson = async <T,>(
   const data = text ? JSON.parse(text) : null
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:logout'))
+    }
     throw new ApiError(response.status, data?.detail ?? data)
   }
 

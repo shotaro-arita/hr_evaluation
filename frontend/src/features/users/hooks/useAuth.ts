@@ -62,6 +62,17 @@ export const useAuth = () => {
     }
   }, [token, loadUser])
 
+  useEffect(() => {
+    const handleForcedLogout = () => {
+      clearToken()
+      setTokenState('')
+      setUser(null)
+      setError('セッションが切れました。再度ログインしてください。')
+    }
+    window.addEventListener('auth:logout', handleForcedLogout)
+    return () => window.removeEventListener('auth:logout', handleForcedLogout)
+  }, [])
+
   return {
     token,
     user,
