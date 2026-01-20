@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 import dj_database_url
 
 
@@ -131,5 +132,5 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "USER_ID_FIELD": "uuid",
-    "ACCESS_TOKEN_LIFETIME": 60 * 60,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
 }
