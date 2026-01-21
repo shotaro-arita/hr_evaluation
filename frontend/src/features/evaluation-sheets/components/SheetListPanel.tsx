@@ -6,9 +6,9 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import type { EvaluationSheet } from '../types'
-import { getEvaluationSheetStatusLabel } from '../../../shared/types/enums'
 import { formatDateTime } from '../../../shared/lib/date'
+import { getEvaluationSheetStatusLabel } from '../../../shared/types/enums'
+import type { EvaluationSheet } from '../types'
 
 type Props = {
   sheets: EvaluationSheet[]
@@ -98,7 +98,10 @@ export const SheetListPanel = ({
               >
                 <Typography fontWeight={600}>{sheet.period_name}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {getEvaluationSheetStatusLabel(sheet.status)}
+                  本人: {getEvaluationSheetStatusLabel(sheet.own_status)}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  評価者: {getEvaluationSheetStatusLabel(sheet.manager_status)}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   更新: {formatDateTime(sheet.updated_at)}

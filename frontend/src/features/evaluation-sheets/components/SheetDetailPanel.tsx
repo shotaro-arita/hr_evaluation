@@ -8,7 +8,10 @@ import {
 } from '@mui/material'
 import { useMemo } from 'react'
 import type { EvaluationItemCategory } from '../../../shared/types/enums'
-import { getEvaluationItemCategoryLabel } from '../../../shared/types/enums'
+import {
+  getEvaluationItemCategoryLabel,
+  getEvaluationSheetStatusLabel,
+} from '../../../shared/types/enums'
 import type { EvaluationSheet, ScoreItem } from '../types'
 
 type Props = {
@@ -60,6 +63,12 @@ export const SheetDetailPanel = ({
               ? `${selectedSheet.employee_name} / ${selectedSheet.period_name}`
               : '一覧からシートを選択してください'}
           </Typography>
+          {selectedSheet ? (
+            <Typography variant="body2" color="text.secondary">
+              本人: {getEvaluationSheetStatusLabel(selectedSheet.own_status)} / 評価者:{' '}
+              {getEvaluationSheetStatusLabel(selectedSheet.manager_status)}
+            </Typography>
+          ) : null}
         </Box>
         {selectedSheet && (
           <Stack direction="row" spacing={1}>

@@ -19,10 +19,8 @@ export type JobType = keyof typeof JOB_TYPE_LABELS
 
 export const EVALUATION_SHEET_STATUS_LABELS = {
   PENDING: '未完了',
-  SELF_EVALUATION_DRAFT: '自己評価下書き',
-  SELF_COMPLETED: '自己評価完了',
-  MANAGER_EVALUATION_DRAFT: '管理者評価下書き',
-  MANAGER_COMPLETED: '管理者評価完了',
+  DRAFT: '下書き',
+  COMPLETED: '完了',
   CANCELLED: 'キャンセル',
 } as const
 

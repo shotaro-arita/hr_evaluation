@@ -25,7 +25,8 @@ export type EvaluationSheet = {
   employee_name: string
   self_evaluation_score: ScoreItem[]
   manager_evaluation_score: ScoreItem[]
-  status: EvaluationSheetStatus
+  own_status: EvaluationSheetStatus
+  manager_status: EvaluationSheetStatus
   created_at: string
   updated_at: string
 }
