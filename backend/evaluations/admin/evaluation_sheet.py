@@ -13,5 +13,5 @@ class DbEvaluationSheetScoreInline(admin.TabularInline):
 @admin.register(DbEvaluationSheet)
 class DbEvaluationSheetAdmin(admin.ModelAdmin):
     inlines = [DbEvaluationSheetScoreInline]
-    list_filter = ["status"]
-    list_display = ["__str__", "employee", "period", "status"]
+    list_filter = ["own_status", "manager_status"]
+    list_display = ["__str__", "employee", "period", "own_status", "manager_status"]

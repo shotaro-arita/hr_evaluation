@@ -34,7 +34,8 @@ class EvaluationSheetQueryServiceImplTest(MyAPITestCase):
             sheet_model = DbEvaluationSheetFactory(
                 period=period,
                 employee=employee,
-                status=EvaluationSheetStatusEnum.SELF_COMPLETED,
+                own_status=EvaluationSheetStatusEnum.COMPLETED,
+                manager_status=EvaluationSheetStatusEnum.DRAFT,
             )
             item1 = DbEvaluationItemFactory(
                 title="Item 1",
@@ -79,7 +80,8 @@ class EvaluationSheetQueryServiceImplTest(MyAPITestCase):
             self.assertEqual(result.employee_uuid, employee.uuid)
             self.assertEqual(result.employee_code, "EMP001")
             self.assertEqual(result.employee_name, "Alice")
-            self.assertEqual(result.status, EvaluationSheetStatusEnum.SELF_COMPLETED)
+            self.assertEqual(result.own_status, EvaluationSheetStatusEnum.COMPLETED)
+            self.assertEqual(result.manager_status, EvaluationSheetStatusEnum.DRAFT)
 
             self.assertEqual(len(result.self_evaluation_score), 1)
             self.assertEqual(result.self_evaluation_score[0].title, "Item 1")

@@ -81,7 +81,8 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
             employee_name=sheet_model.employee.name,
             self_evaluation_score=self_scores,
             manager_evaluation_score=manager_scores,
-            status=EvaluationSheetStatusEnum(sheet_model.status),
+            own_status=EvaluationSheetStatusEnum(sheet_model.own_status),
+            manager_status=EvaluationSheetStatusEnum(sheet_model.manager_status),
             created_at=sheet_model.created_at,
             updated_at=sheet_model.updated_at,
         )

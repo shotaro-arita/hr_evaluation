@@ -44,7 +44,8 @@ class EvaluationSheetRetrieveModel:
     self_evaluation_score: list[EvaluationScoreRetrieveModel]
     manager_evaluation_score: list[EvaluationScoreRetrieveModel]
 
-    status: EvaluationSheetStatusEnum
+    own_status: EvaluationSheetStatusEnum
+    manager_status: EvaluationSheetStatusEnum
 
     created_at: datetime
     updated_at: datetime

@@ -183,7 +183,7 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             self.assertIsNotNone(result)
             self.assertEqual(result.uuid, entity.uuid)
             self.assertEqual(result.employee_uuid, employee_id)
-            self.assertEqual(result.status, EvaluationSheetStatusEnum.SELF_COMPLETED)
+            self.assertEqual(result.own_status, EvaluationSheetStatusEnum.COMPLETED)
             self.assertEqual(result.own_scores[0].score, 3)
             self.assertEqual(result.own_scores[1].score, 4)
 
@@ -305,6 +305,8 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             self.assertIsNotNone(result)
             self.assertEqual(result.uuid, entity.uuid)
             self.assertEqual(result.employee_uuid, employee_id)
-            self.assertEqual(result.status, EvaluationSheetStatusEnum.MANAGER_COMPLETED)
+            self.assertEqual(
+                result.manager_status, EvaluationSheetStatusEnum.COMPLETED
+            )
             self.assertEqual(result.manager_scores[0].score, 3)
             self.assertEqual(result.manager_scores[1].score, 4)

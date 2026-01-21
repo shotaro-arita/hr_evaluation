@@ -30,7 +30,12 @@ class DbEvaluationSheet(models.Model):
     employee = models.ForeignKey(
         DbEmployee, on_delete=models.CASCADE, related_name="evaluation_sheets"
     )
-    status = ChoiceField(max_length=32, choices=EvaluationSheetStatusEnum.choices())
+    own_status = ChoiceField(
+        max_length=32, choices=EvaluationSheetStatusEnum.choices()
+    )
+    manager_status = ChoiceField(
+        max_length=32, choices=EvaluationSheetStatusEnum.choices()
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -58,7 +63,8 @@ class DbEvaluationSheet(models.Model):
             employee_uuid=self.employee_id,
             own_scores=own_scores,
             manager_scores=manager_scores,
-            status=EvaluationSheetStatusEnum(self.status),
+            own_status=EvaluationSheetStatusEnum(self.own_status),
+            manager_status=EvaluationSheetStatusEnum(self.manager_status),
             created_at=self.created_at,
             updated_at=self.updated_at,
         )

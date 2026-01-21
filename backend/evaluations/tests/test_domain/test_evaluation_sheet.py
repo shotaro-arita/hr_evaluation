@@ -67,7 +67,7 @@ class EvaluationSheetTest(MyAPITestCase):
             result = entity.save_temporary_own_score(score_dict)
 
             self.assertEqual(
-                result.status, EvaluationSheetStatusEnum.SELF_EVALUATION_DRAFT
+                result.own_status, EvaluationSheetStatusEnum.DRAFT
             )
             self.assertEqual(result.own_scores[0].score, 3)
             self.assertEqual(result.own_scores[1].score, 5)
@@ -98,7 +98,7 @@ class EvaluationSheetTest(MyAPITestCase):
 
             result = entity.complete_own_score(score_dict)
 
-            self.assertEqual(result.status, EvaluationSheetStatusEnum.SELF_COMPLETED)
+            self.assertEqual(result.own_status, EvaluationSheetStatusEnum.COMPLETED)
             self.assertEqual(result.own_scores[0].score, 1)
             self.assertEqual(result.own_scores[1].score, 4)
 
@@ -116,7 +116,7 @@ class EvaluationSheetTest(MyAPITestCase):
             result = entity.save_temporary_manager_score(score_dict)
 
             self.assertEqual(
-                result.status, EvaluationSheetStatusEnum.MANAGER_EVALUATION_DRAFT
+                result.manager_status, EvaluationSheetStatusEnum.DRAFT
             )
             self.assertIsNone(result.manager_scores[0].score)
             self.assertEqual(result.manager_scores[1].score, 2)
@@ -147,6 +147,8 @@ class EvaluationSheetTest(MyAPITestCase):
 
             result = entity.update_manager_score(score_dict)
 
-            self.assertEqual(result.status, EvaluationSheetStatusEnum.MANAGER_COMPLETED)
+            self.assertEqual(
+                result.manager_status, EvaluationSheetStatusEnum.COMPLETED
+            )
             self.assertEqual(result.manager_scores[0].score, 2)
             self.assertEqual(result.manager_scores[1].score, 5)

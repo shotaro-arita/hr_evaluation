@@ -51,7 +51,8 @@ class EvaluationSheetFactory(EvaluationSheet):
     employee_uuid: UUID = field(default_factory=uuid4)
     own_scores: list[EvaluationSheetScore] = field(default_factory=list)
     manager_scores: list[EvaluationSheetScore] = field(default_factory=list)
-    status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
+    own_status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
+    manager_status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
     created_at: datetime | None = None
     updated_at: datetime | None = None
 

@@ -53,7 +53,8 @@ class EvaluationSheetRepositoryImpl(EvaluationSheetRepository):
     ) -> DbEvaluationSheet:
         evaluation_sheet_model.period_id = evaluation_sheet.period_uuid
         evaluation_sheet_model.employee_id = evaluation_sheet.employee_uuid
-        evaluation_sheet_model.status = evaluation_sheet.status.value
+        evaluation_sheet_model.own_status = evaluation_sheet.own_status.value
+        evaluation_sheet_model.manager_status = evaluation_sheet.manager_status.value
         return evaluation_sheet_model
 
     def _create_scores(

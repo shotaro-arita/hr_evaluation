@@ -37,7 +37,8 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
             sheet_model = DbEvaluationSheetFactory(
                 period=period,
                 employee=employee,
-                status=EvaluationSheetStatusEnum.PENDING,
+                own_status=EvaluationSheetStatusEnum.PENDING,
+                manager_status=EvaluationSheetStatusEnum.PENDING,
             )
             own_item = DbEvaluationItemFactory()
             manager_item = DbEvaluationItemFactory()
@@ -113,7 +114,8 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
                 employee_uuid=employee.uuid,
                 own_scores=[own_score1, own_score2, own_score3],
                 manager_scores=[manager_score1, manager_score2],
-                status=EvaluationSheetStatusEnum.SELF_COMPLETED,
+                own_status=EvaluationSheetStatusEnum.COMPLETED,
+                manager_status=EvaluationSheetStatusEnum.DRAFT,
             )
 
             result = repository.create(entity)
@@ -121,7 +123,8 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
             self.assertEqual(result.uuid, entity.uuid)
             self.assertEqual(result.period_uuid, period.uuid)
             self.assertEqual(result.employee_uuid, employee.uuid)
-            self.assertEqual(result.status, EvaluationSheetStatusEnum.SELF_COMPLETED)
+            self.assertEqual(result.own_status, EvaluationSheetStatusEnum.COMPLETED)
+            self.assertEqual(result.manager_status, EvaluationSheetStatusEnum.DRAFT)
 
             self.assertEqual(len(result.own_scores), 3)
             self.assertEqual(result.own_scores[2].uuid, own_score1.uuid)
@@ -145,7 +148,8 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
             sheet_model = DbEvaluationSheetFactory(
                 period=period,
                 employee=employee,
-                status=EvaluationSheetStatusEnum.PENDING,
+                own_status=EvaluationSheetStatusEnum.PENDING,
+                manager_status=EvaluationSheetStatusEnum.PENDING,
             )
             item1 = DbEvaluationItemFactory()
             item2 = DbEvaluationItemFactory()
@@ -195,13 +199,15 @@ class EvaluationSheetRepositoryImplTest(MyAPITestCase):
                 employee_uuid=employee.uuid,
                 own_scores=[updated_score1, updated_score2],
                 manager_scores=[new_score],
-                status=EvaluationSheetStatusEnum.MANAGER_COMPLETED,
+                own_status=EvaluationSheetStatusEnum.DRAFT,
+                manager_status=EvaluationSheetStatusEnum.COMPLETED,
             )
 
             result = repository.update(updated_entity)
 
             self.assertEqual(result.uuid, updated_entity.uuid)
-            self.assertEqual(result.status, EvaluationSheetStatusEnum.MANAGER_COMPLETED)
+            self.assertEqual(result.own_status, EvaluationSheetStatusEnum.DRAFT)
+            self.assertEqual(result.manager_status, EvaluationSheetStatusEnum.COMPLETED)
 
             self.assertEqual(len(result.own_scores), 2)
             self.assertEqual(result.own_scores[1].uuid, existing_score1.uuid)

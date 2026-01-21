@@ -112,7 +112,8 @@ class DbEvaluationSheetFactory(BaseFactory[DbEvaluationSheet]):
     uuid = factory.LazyFunction(uuid4)
     period = factory.SubFactory(DbPeriodFactory)
     employee = factory.SubFactory(DbEmployeeFactory)
-    status = EvaluationSheetStatusEnum.PENDING
+    own_status = EvaluationSheetStatusEnum.PENDING
+    manager_status = EvaluationSheetStatusEnum.PENDING
     created_at = factory.LazyFunction(get_random_datetime)
     updated_at = factory.LazyFunction(get_random_datetime)
 

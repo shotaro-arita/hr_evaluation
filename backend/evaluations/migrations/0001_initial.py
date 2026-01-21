@@ -186,7 +186,8 @@ class Migration(migrations.Migration):
             name="DbEvaluationSheet",
             fields=[
                 ("uuid", models.UUIDField(primary_key=True, serialize=False)),
-                ("status", evaluations.models.model_fields.ChoiceField(max_length=32)),
+                ("own_status", evaluations.models.model_fields.ChoiceField(max_length=32)),
+                ("manager_status", evaluations.models.model_fields.ChoiceField(max_length=32)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
