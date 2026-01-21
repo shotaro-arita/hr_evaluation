@@ -31,7 +31,8 @@ export const SheetDetailPage = ({
   const { sheetId } = useParams()
   const navigate = useNavigate()
   const [sheet, setSheet] = useState<EvaluationSheet | null>(null)
-  const [scoreDraft, setScoreDraft] = useState<Record<string, string>>({})
+  const [ownDraft, setOwnDraft] = useState<Record<string, string>>({})
+  const [managerDraft, setManagerDraft] = useState<Record<string, string>>({})
 
   const fetchSheetDetail = async (id: string) => {
     setLoading(true)
@@ -39,15 +40,16 @@ export const SheetDetailPage = ({
     try {
       const data = await getSheet(token, id)
       setSheet(data)
-      const isSelf = data.employee_uuid === user?.employee_uuid
-      const editableScores = isSelf
-        ? data.self_evaluation_score
-        : data.manager_evaluation_score
-      const draft: Record<string, string> = {}
-      editableScores.forEach((item) => {
-        draft[item.item_uuid] = item.score ? String(item.score) : ''
+      const ownDraftValues: Record<string, string> = {}
+      data.self_evaluation_score.forEach((item) => {
+        ownDraftValues[item.item_uuid] = item.score ? String(item.score) : ''
       })
-      setScoreDraft(draft)
+      setOwnDraft(ownDraftValues)
+      const managerDraftValues: Record<string, string> = {}
+      data.manager_evaluation_score.forEach((item) => {
+        managerDraftValues[item.item_uuid] = item.score ? String(item.score) : ''
+      })
+      setManagerDraft(managerDraftValues)
     } catch (err) {
       onError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
@@ -67,28 +69,53 @@ export const SheetDetailPage = ({
     return targets.some((target) => target.employee_uuid === sheet.employee_uuid)
   }, [isSelf, sheet, targets, user])
 
-  const editableScores = sheet
-    ? isSelf
-      ? sheet.self_evaluation_score
-      : sheet.manager_evaluation_score
-    : []
+  const ownScores = sheet ? sheet.self_evaluation_score : []
+  const managerScores = sheet ? sheet.manager_evaluation_score : []
+  const canEditOwn = !!sheet && isSelf
+  const canEditManager = !!sheet && !isSelf && canEdit
 
-  const handleSaveScores = async (isTemporary: boolean) => {
-    if (!sheet) return
+  const handleSaveOwnScores = async (isTemporary: boolean) => {
+    if (!sheet || !canEditOwn) return
     setLoading(true)
     onError('')
     onInfo('')
     try {
       const payload = {
-        sheet_scores: editableScores.map((item: ScoreItem) => ({
+        sheet_scores: ownScores.map((item: ScoreItem) => ({
           evaluation_item_id: item.item_uuid,
-          score: scoreDraft[item.item_uuid]
-            ? Number(scoreDraft[item.item_uuid])
+          score: ownDraft[item.item_uuid]
+            ? Number(ownDraft[item.item_uuid])
             : null,
         })),
         is_temporary: isTemporary,
       }
-      await updateSheet(token, sheet.uuid, payload, isSelf ? 'own' : 'manager')
+      await updateSheet(token, sheet.uuid, payload, 'own')
+      onInfo(isTemporary ? '下書きを保存しました。' : '評価を保存しました。')
+      await fetchSheetDetail(sheet.uuid)
+      await onRefreshSheets(sheet.employee_uuid)
+    } catch (err) {
+      onError(err instanceof Error ? err.message : 'Unknown error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveManagerScores = async (isTemporary: boolean) => {
+    if (!sheet || !canEditManager) return
+    setLoading(true)
+    onError('')
+    onInfo('')
+    try {
+      const payload = {
+        sheet_scores: managerScores.map((item: ScoreItem) => ({
+          evaluation_item_id: item.item_uuid,
+          score: managerDraft[item.item_uuid]
+            ? Number(managerDraft[item.item_uuid])
+            : null,
+        })),
+        is_temporary: isTemporary,
+      }
+      await updateSheet(token, sheet.uuid, payload, 'manager')
       onInfo(isTemporary ? '下書きを保存しました。' : '評価を保存しました。')
       await fetchSheetDetail(sheet.uuid)
       await onRefreshSheets(sheet.employee_uuid)
@@ -108,14 +135,22 @@ export const SheetDetailPage = ({
       </Box>
       <SheetDetailPanel
         selectedSheet={sheet}
-        editableScores={editableScores}
-        scoreDraft={scoreDraft}
-        canEdit={canEdit}
+        ownScores={ownScores}
+        managerScores={managerScores}
+        ownDraft={ownDraft}
+        managerDraft={managerDraft}
+        canEditOwn={canEditOwn}
+        canEditManager={canEditManager}
         loading={loading}
-        onSaveTemp={() => handleSaveScores(true)}
-        onSaveFinal={() => handleSaveScores(false)}
-        onScoreChange={(itemId, value) =>
-          setScoreDraft((prev) => ({ ...prev, [itemId]: value }))
+        onSaveOwnTemp={() => handleSaveOwnScores(true)}
+        onSaveOwnFinal={() => handleSaveOwnScores(false)}
+        onSaveManagerTemp={() => handleSaveManagerScores(true)}
+        onSaveManagerFinal={() => handleSaveManagerScores(false)}
+        onOwnScoreChange={(itemId, value) =>
+          setOwnDraft((prev) => ({ ...prev, [itemId]: value }))
+        }
+        onManagerScoreChange={(itemId, value) =>
+          setManagerDraft((prev) => ({ ...prev, [itemId]: value }))
         }
       />
     </Stack>
