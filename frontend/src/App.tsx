@@ -12,6 +12,7 @@ import { SheetListPanel } from './features/evaluation-sheets/components/SheetLis
 import { SheetDetailPage } from './features/evaluation-sheets/pages/SheetDetailPage'
 import type { EvaluationSheet } from './features/evaluation-sheets/types'
 import { listPeriods } from './features/periods/api'
+import type { Period } from './features/periods/types'
 import { LoginPanel } from './features/users/components/LoginPanel'
 import { UserOverviewPanel } from './features/users/components/UserOverviewPanel'
 import { useAuth } from './features/users/hooks/useAuth'
@@ -55,6 +56,8 @@ function App() {
   const [employeeCode, setEmployeeCode] = useState('')
   const [password, setPassword] = useState('')
   const [currentPeriodId, setCurrentPeriodId] = useState<string | null>(null)
+  const [periods, setPeriods] = useState<Period[]>([])
+  const [selectedPeriodId, setSelectedPeriodId] = useState('')
   const [targets, setTargets] = useState<ManagerTarget[]>([])
   const [selectedEmployeeId, setSelectedEmployeeId] = useState('')
   const [sheets, setSheets] = useState<EvaluationSheet[]>([])
@@ -83,9 +86,12 @@ function App() {
   const resetDashboard = () => {
     setTargets([])
     setCurrentPeriodId(null)
+    setPeriods([])
+    setSelectedPeriodId('')
     setSelectedEmployeeId('')
     setSheets([])
     setSelectedSheetId(null)
+    setTargetStatuses({})
   }
 
   const bootstrap = async (activeUser: User) => {
@@ -94,6 +100,10 @@ function App() {
     try {
       const periodData = await listPeriods(token)
       setCurrentPeriodId(periodData.current_period_uuid)
+      setPeriods(periodData.periods)
+      const defaultPeriodId =
+        periodData.current_period_uuid ?? periodData.periods[0]?.uuid ?? ''
+      setSelectedPeriodId(defaultPeriodId)
       if (activeUser.is_manager) {
         const managerTargets = await listTargets(token)
         setTargets(managerTargets)
@@ -108,13 +118,16 @@ function App() {
     }
   }
 
-  const fetchSheets = async (employeeId: string) => {
+  const fetchSheets = async (employeeId: string, periodId?: string) => {
     if (!employeeId) return
     setLoading(true)
     setError('')
     try {
       const data = await listSheets(token, employeeId)
-      setSheets(data)
+      const filtered = periodId
+        ? data.filter((sheet) => sheet.period_uuid === periodId)
+        : data
+      setSheets(filtered)
       setSelectedSheetId(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error')
@@ -124,7 +137,7 @@ function App() {
   }
 
   const fetchTargetStatuses = async (employeeIds: string[]) => {
-    if (!currentPeriodId || employeeIds.length === 0) return
+    if (!selectedPeriodId || employeeIds.length === 0) return
     setTargetStatusLoading(true)
     try {
       const uniqueIds = Array.from(new Set(employeeIds))
@@ -132,7 +145,7 @@ function App() {
         uniqueIds.map(async (employeeId) => {
           const list = await listSheets(token, employeeId)
           const current = list.find(
-            (sheet) => sheet.period_uuid === currentPeriodId
+            (sheet) => sheet.period_uuid === selectedPeriodId
           )
           return [
             employeeId,
@@ -167,7 +180,10 @@ function App() {
         period_id: currentPeriodId,
       })
       setInfo('今期の評価シートを作成しました。')
-      await fetchSheets(selectedEmployeeId)
+      await fetchSheets(
+        selectedEmployeeId,
+        user?.is_manager && selectedPeriodId ? selectedPeriodId : undefined
+      )
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
@@ -185,15 +201,17 @@ function App() {
 
   useEffect(() => {
     if (token && selectedEmployeeId) {
-      void fetchSheets(selectedEmployeeId)
+      const periodId =
+        user?.is_manager && selectedPeriodId ? selectedPeriodId : undefined
+      void fetchSheets(selectedEmployeeId, periodId)
     }
-  }, [token, selectedEmployeeId])
+  }, [token, selectedEmployeeId, selectedPeriodId, user?.is_manager])
 
   useEffect(() => {
-    if (!token || !user?.is_manager || !currentPeriodId) return
+    if (!token || !user?.is_manager || !selectedPeriodId) return
     const targetIds = [user.employee_uuid, ...targets.map((t) => t.employee_uuid)]
     void fetchTargetStatuses(targetIds)
-  }, [token, user, targets, currentPeriodId])
+  }, [token, user, targets, selectedPeriodId])
 
   const targetOptions = useMemo(() => {
     const options = targets.map((target) => ({
@@ -253,22 +271,32 @@ function App() {
                         <TargetSelectorPanel
                           targets={targetOptions}
                           selectedEmployeeId={selectedEmployeeId}
-                          helperText={
-                            targets.length === 0
-                              ? '管理者対象が登録されていません。'
-                              : `${targets.length}名の評価対象がいます。`
-                          }
-                          loading={targetStatusLoading}
-                          onChange={setSelectedEmployeeId}
-                        />
-                      </Box>
+                        helperText={
+                          targets.length === 0
+                            ? '管理者対象が登録されていません。'
+                            : `${targets.length}名の評価対象がいます。`
+                        }
+                        loading={targetStatusLoading}
+                        periods={periods}
+                        selectedPeriodId={selectedPeriodId}
+                        onPeriodChange={setSelectedPeriodId}
+                        onChange={setSelectedEmployeeId}
+                      />
+                    </Box>
                     ) : null}
                     <Box sx={{ gridColumn: { xs: 'auto', md: '1 / -1' } }}>
                       <SheetListPanel
                         sheets={sheets}
                         selectedSheetId={selectedSheetId}
                         loading={loading}
-                        onReload={() => fetchSheets(selectedEmployeeId)}
+                        onReload={() =>
+                          fetchSheets(
+                            selectedEmployeeId,
+                            user?.is_manager && selectedPeriodId
+                              ? selectedPeriodId
+                              : undefined
+                          )
+                        }
                         onCreate={handleCreateSheet}
                         canCreate={canCreateSheet}
                         onSelect={(sheetId) => {
@@ -292,7 +320,14 @@ function App() {
                     setLoading={setLoading}
                     onError={setError}
                     onInfo={setInfo}
-                    onRefreshSheets={fetchSheets}
+                    onRefreshSheets={(employeeId) =>
+                      fetchSheets(
+                        employeeId,
+                        user?.is_manager && selectedPeriodId
+                          ? selectedPeriodId
+                          : undefined
+                      )
+                    }
                   />
                 }
               />
