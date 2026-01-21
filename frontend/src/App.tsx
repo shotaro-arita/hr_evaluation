@@ -59,6 +59,13 @@ function App() {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState('')
   const [sheets, setSheets] = useState<EvaluationSheet[]>([])
   const [selectedSheetId, setSelectedSheetId] = useState<string | null>(null)
+  const [targetStatuses, setTargetStatuses] = useState<
+    Record<
+      string,
+      Pick<EvaluationSheet, 'own_status' | 'manager_status'> | null
+    >
+  >({})
+  const [targetStatusLoading, setTargetStatusLoading] = useState(false)
   const [error, setError] = useState('')
   const [info, setInfo] = useState('')
   const [loading, setLoading] = useState(false)
@@ -116,6 +123,36 @@ function App() {
     }
   }
 
+  const fetchTargetStatuses = async (employeeIds: string[]) => {
+    if (!currentPeriodId || employeeIds.length === 0) return
+    setTargetStatusLoading(true)
+    try {
+      const uniqueIds = Array.from(new Set(employeeIds))
+      const entries = await Promise.all(
+        uniqueIds.map(async (employeeId) => {
+          const list = await listSheets(token, employeeId)
+          const current = list.find(
+            (sheet) => sheet.period_uuid === currentPeriodId
+          )
+          return [
+            employeeId,
+            current
+              ? {
+                  own_status: current.own_status,
+                  manager_status: current.manager_status,
+                }
+              : null,
+          ] as const
+        })
+      )
+      setTargetStatuses(Object.fromEntries(entries))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error')
+    } finally {
+      setTargetStatusLoading(false)
+    }
+  }
+
   const handleCreateSheet = async () => {
     if (!currentPeriodId || !selectedEmployeeId) {
       setError('今期または対象者が選択されていません。')
@@ -152,19 +189,28 @@ function App() {
     }
   }, [token, selectedEmployeeId])
 
+  useEffect(() => {
+    if (!token || !user?.is_manager || !currentPeriodId) return
+    const targetIds = [user.employee_uuid, ...targets.map((t) => t.employee_uuid)]
+    void fetchTargetStatuses(targetIds)
+  }, [token, user, targets, currentPeriodId])
+
   const targetOptions = useMemo(() => {
     const options = targets.map((target) => ({
-      value: target.employee_uuid,
+      employeeId: target.employee_uuid,
       label: `${target.employee_code} ${target.name}`,
+      status: targetStatuses[target.employee_uuid] ?? null,
     }))
     if (user) {
       options.unshift({
-        value: user.employee_uuid,
-        label: `${user.employee_code} ${user.name} (自分)`,
+        employeeId: user.employee_uuid,
+        label: `${user.employee_code} ${user.name}`,
+        status: targetStatuses[user.employee_uuid] ?? null,
+        isSelf: true,
       })
     }
     return options
-  }, [targets, user])
+  }, [targetStatuses, targets, user])
 
   const canCreateSheet = useMemo(
     () => !loading && !!currentPeriodId && !!selectedEmployeeId,
@@ -203,16 +249,19 @@ function App() {
                       <UserOverviewPanel user={user} onLogout={logout} />
                     </Box>
                     {user?.is_manager ? (
-                      <TargetSelectorPanel
-                        options={targetOptions}
-                        selectedEmployeeId={selectedEmployeeId}
-                        helperText={
-                          targets.length === 0
-                            ? '管理者対象が登録されていません。'
-                            : `${targets.length}名の評価対象がいます。`
-                        }
-                        onChange={setSelectedEmployeeId}
-                      />
+                      <Box sx={{ gridColumn: { xs: 'auto', md: '1 / -1' } }}>
+                        <TargetSelectorPanel
+                          targets={targetOptions}
+                          selectedEmployeeId={selectedEmployeeId}
+                          helperText={
+                            targets.length === 0
+                              ? '管理者対象が登録されていません。'
+                              : `${targets.length}名の評価対象がいます。`
+                          }
+                          loading={targetStatusLoading}
+                          onChange={setSelectedEmployeeId}
+                        />
+                      </Box>
                     ) : null}
                     <Box sx={{ gridColumn: { xs: 'auto', md: '1 / -1' } }}>
                       <SheetListPanel
