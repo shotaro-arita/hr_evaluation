@@ -20,6 +20,7 @@ from evaluations.tests.repository import (
 from evaluations.tests.query_service import (
     EvaluationAssignmentQueryServiceMock,
     EvaluationSheetQueryServiceMock,
+    EvaluationWeightPolicyQueryServiceMock,
     PeriodQueryServiceMock,
     UserQueryServiceMock,
 )
@@ -28,6 +29,9 @@ from evaluations.usecase.evaluation_sheet.query_service import (
 )
 from evaluations.usecase.evaluation_assignment.query_service import (
     EvaluationAssignmentQueryService,
+)
+from evaluations.usecase.evaluation_weight_policy.query_service import (
+    EvaluationWeightPolicyQueryService,
 )
 from evaluations.usecase.period.query_service import PeriodQueryService
 from evaluations.usecase.user.query_service import UserQueryService
@@ -47,6 +51,9 @@ def mock_injection_config(binder: Binder) -> None:
     binder.bind(EvaluationSheetQueryService, EvaluationSheetQueryServiceMock)
     binder.bind(
         EvaluationAssignmentQueryService, EvaluationAssignmentQueryServiceMock
+    )
+    binder.bind(
+        EvaluationWeightPolicyQueryService, EvaluationWeightPolicyQueryServiceMock
     )
     binder.bind(PeriodQueryService, PeriodQueryServiceMock)
     binder.bind(UserQueryService, UserQueryServiceMock)

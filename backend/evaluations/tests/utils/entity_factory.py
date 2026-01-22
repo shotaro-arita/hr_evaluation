@@ -1,13 +1,20 @@
 from dataclasses import dataclass, field
+from typing import Any
 from evaluations.domain.employee.entity import Employee, JobTypeEnum, PositionEnum
 from evaluations.domain.evaluation_assignment.entity import (
     AssignmentRoleEnum,
     EvaluationAssignment,
 )
+from evaluations.domain.evaluation_item.entity import EvaluationItemCategory
 from evaluations.domain.evaluation_sheet.entity import (
     EvaluationSheet,
     EvaluationSheetScore,
     EvaluationSheetStatusEnum,
+)
+from evaluations.usecase.evaluation_sheet.query_service import (
+    EvaluationScoreRetrieveModel,
+    EvaluationSheetRawModel,
+    EvaluationSheetRetrieveModel,
 )
 from evaluations.domain.user.entity import User
 from django.utils.crypto import get_random_string as django_get_random_string
@@ -64,6 +71,67 @@ class EvaluationSheetScoreFactory(EvaluationSheetScore):
     score: int | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
+
+
+@dataclass(frozen=True)
+class EvaluationScoreRetrieveModelFactory(EvaluationScoreRetrieveModel):
+    uuid: UUID = field(default_factory=uuid4)
+    item_uuid: UUID = field(default_factory=uuid4)
+    title: str = field(default_factory=get_random_string)
+    category: EvaluationItemCategory = EvaluationItemCategory.PERFORMANCE_RESULTS
+    description: str = field(default_factory=get_random_string)
+    criteria_1: str = field(default_factory=get_random_string)
+    criteria_2: str = field(default_factory=get_random_string)
+    criteria_3: str = field(default_factory=get_random_string)
+    criteria_4: str = field(default_factory=get_random_string)
+    criteria_5: str = field(default_factory=get_random_string)
+    score: int | None = None
+
+
+@dataclass(frozen=True)
+class EvaluationSheetRetrieveModelFactory(EvaluationSheetRetrieveModel):
+    uuid: UUID = field(default_factory=uuid4)
+    period_uuid: UUID = field(default_factory=uuid4)
+    period_name: str = field(default_factory=get_random_string)
+    employee_uuid: UUID = field(default_factory=uuid4)
+    employee_code: str = field(default_factory=get_random_string)
+    employee_name: str = field(default_factory=get_random_string)
+    self_evaluation_score: list[EvaluationScoreRetrieveModel] = field(
+        default_factory=list
+    )
+    manager_evaluation_score: list[EvaluationScoreRetrieveModel] = field(
+        default_factory=list
+    )
+    own_status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
+    manager_status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
+    own_weighted_total: int | None = None
+    own_weighted_max: int | None = None
+    manager_weighted_total: int | None = None
+    manager_weighted_max: int | None = None
+    own_category_scores: list[Any] = field(default_factory=list)
+    manager_category_scores: list[Any] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class EvaluationSheetRawModelFactory(EvaluationSheetRawModel):
+    uuid: UUID = field(default_factory=uuid4)
+    period_uuid: UUID = field(default_factory=uuid4)
+    period_name: str = field(default_factory=get_random_string)
+    employee_uuid: UUID = field(default_factory=uuid4)
+    employee_code: str = field(default_factory=get_random_string)
+    employee_name: str = field(default_factory=get_random_string)
+    self_evaluation_score: list[EvaluationScoreRetrieveModel] = field(
+        default_factory=list
+    )
+    manager_evaluation_score: list[EvaluationScoreRetrieveModel] = field(
+        default_factory=list
+    )
+    own_status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
+    manager_status: EvaluationSheetStatusEnum = EvaluationSheetStatusEnum.PENDING
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
 
 
 @dataclass(frozen=True)

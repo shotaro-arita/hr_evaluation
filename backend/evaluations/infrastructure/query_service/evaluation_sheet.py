@@ -7,7 +7,7 @@ from evaluations.models.evaluation_sheet import DbEvaluationSheet
 from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationScoreRetrieveModel,
     EvaluationSheetQueryService,
-    EvaluationSheetRetrieveModel,
+    EvaluationSheetRawModel,
 )
 from evaluations.domain.user.entity import User
 
@@ -19,7 +19,7 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
         ).values_list("target_employee_id", flat=True)
         return {user.employee_uuid, *set(manager_targets)}
 
-    def find_by_id(self, user: User, id: UUID) -> EvaluationSheetRetrieveModel | None:
+    def find_by_id(self, user: User, id: UUID) -> EvaluationSheetRawModel | None:
         allowed_employee_ids = self._get_allowed_employee_ids(user)
         try:
             sheet_model = (
@@ -33,7 +33,7 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
 
     def get_list_by_employee_id(
         self, user: User, employee_id: UUID
-    ) -> list[EvaluationSheetRetrieveModel]:
+    ) -> list[EvaluationSheetRawModel]:
         allowed_employee_ids = self._get_allowed_employee_ids(user)
         if employee_id not in allowed_employee_ids:
             return []
@@ -46,7 +46,7 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
 
     def _to_retrieve_model(
         self, sheet_model: DbEvaluationSheet
-    ) -> EvaluationSheetRetrieveModel:
+    ) -> EvaluationSheetRawModel:
         score_models = list(sheet_model.scores.all())
         self_scores: list[EvaluationScoreRetrieveModel] = []
         manager_scores: list[EvaluationScoreRetrieveModel] = []
@@ -72,7 +72,7 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
             else:
                 self_scores.append(model)
 
-        return EvaluationSheetRetrieveModel(
+        return EvaluationSheetRawModel(
             uuid=sheet_model.uuid,
             period_uuid=sheet_model.period_id,
             period_name=sheet_model.period.name,

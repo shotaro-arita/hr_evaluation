@@ -29,6 +29,10 @@ class EvaluationItemCategory(str, Enum):
         else:
             raise ValueError("無効な評価項目カテゴリです。")
 
+    @classmethod
+    def choices(cls) -> list[tuple[str, str]]:
+        return [(s.value, s.text) for s in cls]
+
 
 @dataclass(frozen=True)
 class EvaluationItem:

@@ -8,6 +8,9 @@ from evaluations.infrastructure.query_service.evaluation_assignment import (
 )
 from evaluations.infrastructure.query_service.period import PeriodQueryServiceImpl
 from evaluations.infrastructure.query_service.user import UserQueryServiceImpl
+from evaluations.infrastructure.query_service.evaluation_weight_policy import (
+    EvaluationWeightPolicyQueryServiceImpl,
+)
 from evaluations.infrastructure.repository.employee import (
     EmployeeRepositoryImpl,
 )
@@ -28,6 +31,9 @@ from evaluations.usecase.evaluation_assignment.query_service import (
 )
 from evaluations.usecase.period.query_service import PeriodQueryService
 from evaluations.usecase.user.query_service import UserQueryService
+from evaluations.usecase.evaluation_weight_policy.query_service import (
+    EvaluationWeightPolicyQueryService,
+)
 
 
 from evaluations.domain.employee.repository import EmployeeRepository
@@ -54,6 +60,9 @@ def injection_config(binder: Binder) -> None:
     binder.bind(EvaluationSheetQueryService, EvaluationSheetQueryServiceImpl())
     binder.bind(
         EvaluationAssignmentQueryService, EvaluationAssignmentQueryServiceImpl()
+    )
+    binder.bind(
+        EvaluationWeightPolicyQueryService, EvaluationWeightPolicyQueryServiceImpl()
     )
     binder.bind(PeriodQueryService, PeriodQueryServiceImpl())
     binder.bind(UserQueryService, UserQueryServiceImpl())

@@ -1,6 +1,20 @@
 from unittest.mock import MagicMock
 from uuid import uuid4
 
+from rest_framework.exceptions import ValidationError
+
+from evaluations.domain.evaluation_item.entity import EvaluationItemCategory
+from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatusEnum
+from evaluations.tests.utils.entity_factory import (
+    EmployeeFactory,
+    EvaluationAssignmentFactory,
+    EvaluationScoreRetrieveModelFactory,
+    EvaluationSheetFactory,
+    EvaluationSheetRawModelFactory,
+    EvaluationSheetScoreFactory,
+    UserFactory,
+)
+from evaluations.tests.utils.testcase import MyAPITestCase
 from evaluations.usecase.evaluation_sheet.dto import (
     EvaluationSheetCreateDto,
     EvaluationSheetEmployeeIdDto,
@@ -9,16 +23,10 @@ from evaluations.usecase.evaluation_sheet.dto import (
     EvaluationSheetUpdateDto,
 )
 from evaluations.usecase.evaluation_sheet.usecase import EvaluationSheetUsecase
-from evaluations.tests.utils.entity_factory import (
-    EmployeeFactory,
-    EvaluationSheetFactory,
-    EvaluationAssignmentFactory,
-    EvaluationSheetScoreFactory,
-    UserFactory,
+from evaluations.usecase.evaluation_weight_policy.query_service import (
+    EvaluationWeightModel,
+    EvaluationWeightPolicyListModel,
 )
-from evaluations.tests.utils.testcase import MyAPITestCase
-from rest_framework.exceptions import ValidationError
-from evaluations.domain.evaluation_sheet.entity import EvaluationSheetStatusEnum
 
 
 class EvaluationSheetUsecaseTest(MyAPITestCase):
@@ -38,9 +46,44 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
 
         with self.subTest("正常に取得できること"):
             usecase = EvaluationSheetUsecase()
-            entity = EvaluationSheetFactory()
+            employee_id = uuid4()
+            own_score = EvaluationScoreRetrieveModelFactory(
+                category=EvaluationItemCategory.PERFORMANCE_RESULTS,
+                score=3,
+            )
+            manager_score = EvaluationScoreRetrieveModelFactory(
+                category=EvaluationItemCategory.ATTITUDE_SKILLS,
+                score=4,
+            )
+            entity = EvaluationSheetRawModelFactory(
+                employee_uuid=employee_id,
+                self_evaluation_score=[own_score],
+                manager_evaluation_score=[manager_score],
+                own_status=EvaluationSheetStatusEnum.COMPLETED,
+                manager_status=EvaluationSheetStatusEnum.DRAFT,
+            )
             usecase.evaluation_sheet_query_service.find_by_id = MagicMock(
                 return_value=entity
+            )
+            usecase.employee_repository.find_by_id = MagicMock(
+                return_value=EmployeeFactory(uuid=employee_id)
+            )
+            usecase.evaluation_weight_policy_query_service.get_weights = MagicMock(
+                side_effect=lambda _user,
+                period_id,
+                position: EvaluationWeightPolicyListModel(
+                    period_uuid=period_id,
+                    position=position,
+                    weights=[
+                        EvaluationWeightModel(
+                            category=EvaluationItemCategory.PERFORMANCE_RESULTS,
+                            weight=60,
+                        ),
+                        EvaluationWeightModel(
+                            category=EvaluationItemCategory.ATTITUDE_SKILLS, weight=40
+                        ),
+                    ],
+                )
             )
             dto = EvaluationSheetIdDto(uuid4())
             request_user = UserFactory()
@@ -48,20 +91,87 @@ class EvaluationSheetUsecaseTest(MyAPITestCase):
             result = usecase.retrieve(request_user, dto)
 
             self.assertIsNotNone(result)
+            self.assertEqual(result.own_weighted_total, 36)
+            self.assertEqual(result.own_weighted_max, 60)
+            self.assertEqual(result.manager_weighted_total, 32)
+            self.assertEqual(result.manager_weighted_max, 40)
+            self.assertEqual(len(result.own_category_scores), 1)
+            self.assertEqual(len(result.manager_category_scores), 1)
+            own_summary = result.own_category_scores[0]
+            manager_summary = result.manager_category_scores[0]
+            self.assertEqual(
+                own_summary.category, EvaluationItemCategory.PERFORMANCE_RESULTS
+            )
+            self.assertEqual(own_summary.total, 3)
+            self.assertEqual(own_summary.max_total, 5)
+            self.assertEqual(own_summary.weighted_total, 36)
+            self.assertEqual(own_summary.weighted_max, 60)
+            self.assertEqual(
+                manager_summary.category, EvaluationItemCategory.ATTITUDE_SKILLS
+            )
+            self.assertEqual(manager_summary.total, 4)
+            self.assertEqual(manager_summary.max_total, 5)
+            self.assertEqual(manager_summary.weighted_total, 32)
+            self.assertEqual(manager_summary.weighted_max, 40)
 
     def test_list_by_employee_id(self) -> None:
         with self.subTest("従業員IDで一覧取得できること"):
             usecase = EvaluationSheetUsecase()
-            expected = [EvaluationSheetFactory(), EvaluationSheetFactory()]
+            employee_id = uuid4()
+            own_score = EvaluationScoreRetrieveModelFactory(
+                category=EvaluationItemCategory.PERFORMANCE_RESULTS,
+                score=3,
+            )
+            manager_score = EvaluationScoreRetrieveModelFactory(
+                category=EvaluationItemCategory.ATTITUDE_SKILLS,
+                score=4,
+            )
+            expected = [
+                EvaluationSheetRawModelFactory(
+                    employee_uuid=employee_id,
+                    self_evaluation_score=[own_score],
+                    manager_evaluation_score=[manager_score],
+                ),
+                EvaluationSheetRawModelFactory(
+                    employee_uuid=employee_id,
+                    self_evaluation_score=[own_score],
+                    manager_evaluation_score=[manager_score],
+                ),
+            ]
             usecase.evaluation_sheet_query_service.get_list_by_employee_id = MagicMock(
                 return_value=expected
+            )
+            usecase.employee_repository.find_by_id = MagicMock(
+                return_value=EmployeeFactory(uuid=employee_id)
+            )
+            usecase.evaluation_weight_policy_query_service.get_weights = MagicMock(
+                side_effect=lambda _user,
+                period_id,
+                position: EvaluationWeightPolicyListModel(
+                    period_uuid=period_id,
+                    position=position,
+                    weights=[
+                        EvaluationWeightModel(
+                            category=EvaluationItemCategory.PERFORMANCE_RESULTS,
+                            weight=60,
+                        ),
+                        EvaluationWeightModel(
+                            category=EvaluationItemCategory.ATTITUDE_SKILLS, weight=40
+                        ),
+                    ],
+                )
             )
             dto = EvaluationSheetEmployeeIdDto(uuid4())
             request_user = UserFactory()
 
             result = usecase.list_by_employee_id(request_user, dto)
 
-            self.assertEqual(result, expected)
+            self.assertEqual(len(result), 2)
+            for sheet in result:
+                self.assertIsNotNone(sheet.own_weighted_total)
+                self.assertIsNotNone(sheet.manager_weighted_total)
+                self.assertEqual(sheet.own_weighted_max, 60)
+                self.assertEqual(sheet.manager_weighted_max, 40)
 
     def test_create(self) -> None:
         with self.subTest("すでに評価シートが存在する場合にエラーになること"):

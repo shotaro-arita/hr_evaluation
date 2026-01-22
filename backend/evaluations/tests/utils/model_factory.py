@@ -18,6 +18,7 @@ from evaluations.models.evaluation_sheet import (
     DbEvaluationSheet,
     DbEvaluationSheetScore,
 )
+from evaluations.models.evaluation_weight_policy import DbEvaluationWeightPolicy
 from evaluations.models.period import DbPeriod
 from evaluations.models.user import DbUser
 from evaluations.tests.utils.entity_factory import (
@@ -127,6 +128,19 @@ class DbEvaluationSheetScoreFactory(BaseFactory[DbEvaluationSheetScore]):
     evaluation_item = factory.SubFactory(DbEvaluationItemFactory)
     score = factory.LazyFunction(lambda: Counter.get() % 5 + 1)
     is_manager = False
+    created_at = factory.LazyFunction(get_random_datetime)
+    updated_at = factory.LazyFunction(get_random_datetime)
+
+
+class DbEvaluationWeightPolicyFactory(BaseFactory[DbEvaluationWeightPolicy]):
+    class Meta:
+        model = DbEvaluationWeightPolicy
+
+    uuid = factory.LazyFunction(uuid4)
+    period = factory.SubFactory(DbPeriodFactory)
+    position = factory.LazyFunction(lambda: list(PositionEnum).pop())
+    category = factory.LazyFunction(lambda: list(EvaluationItemCategory).pop())
+    weight = factory.LazyFunction(lambda: Counter.get() % 100 + 1)
     created_at = factory.LazyFunction(get_random_datetime)
     updated_at = factory.LazyFunction(get_random_datetime)
 
