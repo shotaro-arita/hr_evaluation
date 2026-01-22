@@ -16,6 +16,14 @@ export type ScoreItem = {
   score: number | null
 }
 
+export type CategoryScoreSummary = {
+  category: EvaluationItemCategory
+  total: number
+  max_total: number
+  weighted_total: number | null
+  weighted_max: number | null
+}
+
 export type EvaluationSheet = {
   uuid: string
   period_uuid: string
@@ -27,6 +35,12 @@ export type EvaluationSheet = {
   manager_evaluation_score: ScoreItem[]
   own_status: EvaluationSheetStatus
   manager_status: EvaluationSheetStatus
+  own_weighted_total: number | null
+  own_weighted_max: number | null
+  manager_weighted_total: number | null
+  manager_weighted_max: number | null
+  own_category_scores: CategoryScoreSummary[]
+  manager_category_scores: CategoryScoreSummary[]
   created_at: string
   updated_at: string
 }

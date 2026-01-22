@@ -11,7 +11,7 @@ import {
   getEvaluationItemCategoryLabel,
   getEvaluationSheetStatusLabel,
 } from '../../../shared/types/enums'
-import type { EvaluationSheet, ScoreItem } from '../types'
+import type { CategoryScoreSummary, EvaluationSheet, ScoreItem } from '../types'
 
 type Props = {
   selectedSheet: EvaluationSheet | null
@@ -78,6 +78,34 @@ export const SheetDetailPanel = ({
     )
   }
 
+  const buildCategoryTotals = (
+    scores: ScoreItem[],
+    draft: Record<string, string>
+  ) =>
+    scores.reduce<Record<string, { total: number; max: number }>>((acc, item) => {
+      const key = item.category
+      const value = draft[item.item_uuid]
+      const parsed = value ? Number(value) : 0
+      if (!acc[key]) {
+        acc[key] = { total: 0, max: 0 }
+      }
+      acc[key].total += Number.isNaN(parsed) ? 0 : parsed
+      acc[key].max += 5
+      return acc
+    }, {})
+
+  const formatScore = (value: number | null | undefined, max?: number | null) => {
+    if (value === null || value === undefined || max === null || max === undefined) {
+      return '-'
+    }
+    return `${value} / ${max}`
+  }
+
+  const getCategorySummary = (
+    summaries: CategoryScoreSummary[] | undefined,
+    category: EvaluationItemCategory
+  ) => summaries?.find((summary) => summary.category === category)
+
   const renderScoreGroups = () => {
     const groupedScores = ownScores.reduce<Record<string, ScoreItem[]>>(
       (acc, item) => {
@@ -92,11 +120,55 @@ export const SheetDetailPanel = ({
     const managerScoreMap = new Map(
       managerScores.map((item) => [item.item_uuid, item])
     )
+    const ownTotals = buildCategoryTotals(ownScores, ownDraft)
+    const managerTotals = buildCategoryTotals(managerScores, managerDraft)
     return Object.entries(groupedScores).map(([category, items]) => (
       <Stack key={category} spacing={1.5}>
-        <Typography variant="h2">
-          {getEvaluationItemCategoryLabel(category as EvaluationItemCategory)}
-        </Typography>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          justifyContent="space-between"
+        >
+          <Typography variant="h2">
+            {getEvaluationItemCategoryLabel(category as EvaluationItemCategory)}
+          </Typography>
+          <Stack spacing={0.5} alignItems={{ xs: 'flex-start', sm: 'flex-end' }}>
+            <Typography variant="caption" color="text.secondary">
+              合計得点{' '}
+              {formatScore(ownTotals[category]?.total, ownTotals[category]?.max)} /
+              考課割合{' '}
+              {formatScore(
+                getCategorySummary(
+                  selectedSheet?.own_category_scores,
+                  category as EvaluationItemCategory
+                )?.weighted_total,
+                getCategorySummary(
+                  selectedSheet?.own_category_scores,
+                  category as EvaluationItemCategory
+                )?.weighted_max
+              )}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              合計得点{' '}
+              {formatScore(
+                managerTotals[category]?.total,
+                managerTotals[category]?.max
+              )}{' '}
+              / 考課割合{' '}
+              {formatScore(
+                getCategorySummary(
+                  selectedSheet?.manager_category_scores,
+                  category as EvaluationItemCategory
+                )?.weighted_total,
+                getCategorySummary(
+                  selectedSheet?.manager_category_scores,
+                  category as EvaluationItemCategory
+                )?.weighted_max
+              )}
+            </Typography>
+          </Stack>
+        </Stack>
         {items.map((item) => {
           const managerItem = managerScoreMap.get(item.item_uuid)
           return (
@@ -141,6 +213,35 @@ export const SheetDetailPanel = ({
     ))
   }
 
+  const sumDraftScores = (scores: ScoreItem[], draft: Record<string, string>) =>
+    scores.reduce((total, item) => {
+      const value = draft[item.item_uuid]
+      if (!value) return total
+      const parsed = Number(value)
+      return Number.isNaN(parsed) ? total : total + parsed
+    }, 0)
+
+  const renderTotalScore = (
+    label: string,
+    scores: ScoreItem[],
+    draft: Record<string, string>,
+    weightedTotal: number | null | undefined,
+    weightedMax: number | null | undefined
+  ) => {
+    const total = sumDraftScores(scores, draft)
+    const max = scores.length * 5
+    return (
+      <Stack spacing={0.5}>
+        <Typography variant="body2" color="text.secondary">
+          {label} 合計得点 {total} / {max}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {label} 考課割合 {formatScore(weightedTotal, weightedMax)}
+        </Typography>
+      </Stack>
+    )
+  }
+
   return (
     <Paper
       elevation={0}
@@ -172,6 +273,22 @@ export const SheetDetailPanel = ({
               <Typography variant="caption" color="text.secondary">
                 上段: 本人評価 / 下段: 評価者評価
               </Typography>
+            </Stack>
+            <Stack direction="row" spacing={2}>
+              {renderTotalScore(
+                '本人合計',
+                ownScores,
+                ownDraft,
+                selectedSheet?.own_weighted_total,
+                selectedSheet?.own_weighted_max
+              )}
+              {renderTotalScore(
+                '評価者合計',
+                managerScores,
+                managerDraft,
+                selectedSheet?.manager_weighted_total,
+                selectedSheet?.manager_weighted_max
+              )}
             </Stack>
             <Stack direction="row" spacing={2}>
               {canEditOwn ? (
