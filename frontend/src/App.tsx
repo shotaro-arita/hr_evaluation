@@ -1,4 +1,13 @@
-import { Box, Container, CssBaseline, Stack } from '@mui/material'
+import {
+  Box,
+  Container,
+  CssBaseline,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+} from '@mui/material'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { useEffect, useMemo, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
@@ -201,11 +210,10 @@ function App() {
 
   useEffect(() => {
     if (token && selectedEmployeeId) {
-      const periodId =
-        user?.is_manager && selectedPeriodId ? selectedPeriodId : undefined
+      const periodId = selectedPeriodId || undefined
       void fetchSheets(selectedEmployeeId, periodId)
     }
-  }, [token, selectedEmployeeId, selectedPeriodId, user?.is_manager])
+  }, [token, selectedEmployeeId, selectedPeriodId])
 
   useEffect(() => {
     if (!token || !user?.is_manager || !selectedPeriodId) return
@@ -283,19 +291,47 @@ function App() {
                         onChange={setSelectedEmployeeId}
                       />
                     </Box>
-                    ) : null}
+                    ) : (
+                      <Box sx={{ gridColumn: { xs: 'auto', md: '1 / -1' } }}>
+                        <Box
+                          sx={{
+                            p: 3,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            borderRadius: 2,
+                            backgroundColor: 'background.paper',
+                          }}
+                        >
+                          <FormControl fullWidth>
+                            <InputLabel id="period-select-label">
+                              期間
+                            </InputLabel>
+                            <Select
+                              labelId="period-select-label"
+                              value={selectedPeriodId}
+                              label="期間"
+                              onChange={(event) =>
+                                setSelectedPeriodId(event.target.value)
+                              }
+                              disabled={periods.length === 0}
+                            >
+                              {periods.map((period) => (
+                                <MenuItem key={period.uuid} value={period.uuid}>
+                                  {period.name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Box>
+                      </Box>
+                    )}
                     <Box sx={{ gridColumn: { xs: 'auto', md: '1 / -1' } }}>
                       <SheetListPanel
                         sheets={sheets}
                         selectedSheetId={selectedSheetId}
                         loading={loading}
                         onReload={() =>
-                          fetchSheets(
-                            selectedEmployeeId,
-                            user?.is_manager && selectedPeriodId
-                              ? selectedPeriodId
-                              : undefined
-                          )
+                          fetchSheets(selectedEmployeeId, selectedPeriodId || undefined)
                         }
                         onCreate={handleCreateSheet}
                         canCreate={canCreateSheet}
@@ -321,12 +357,7 @@ function App() {
                     onError={setError}
                     onInfo={setInfo}
                     onRefreshSheets={(employeeId) =>
-                      fetchSheets(
-                        employeeId,
-                        user?.is_manager && selectedPeriodId
-                          ? selectedPeriodId
-                          : undefined
-                      )
+                      fetchSheets(employeeId, selectedPeriodId || undefined)
                     }
                   />
                 }
