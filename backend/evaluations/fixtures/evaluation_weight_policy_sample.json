@@ -1,0 +1,508 @@
+{
+  "evaluation_weight_policies": [
+    {
+      "uuid": "50000000-0000-0000-0000-000000000001",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JR",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000002",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JR",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000003",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JR",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000004",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JR",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000005",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JR",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000006",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JR",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000007",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JS",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000008",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JS",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000009",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JS",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000010",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JS",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000011",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JS",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000012",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "JS",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000013",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "AE",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000014",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "AE",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000015",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "AE",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000016",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "AE",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000017",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "AE",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000018",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "AE",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000019",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "EN",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000020",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "EN",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000021",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "EN",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000022",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "EN",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000023",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "EN",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000024",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "EN",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000025",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SE",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000026",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SE",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000027",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SE",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000028",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SE",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000029",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SE",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000030",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SE",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000031",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SC",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000032",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SC",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000033",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SC",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000034",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SC",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000035",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SC",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000036",
+      "period_uuid": "40000000-0000-0000-0000-000000000001",
+      "position": "SC",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000101",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JR",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000102",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JR",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000103",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JR",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000104",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JR",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000105",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JR",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000106",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JR",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000107",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JS",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000108",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JS",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000109",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JS",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000110",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JS",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000111",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JS",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000112",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "JS",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000113",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "AE",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000114",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "AE",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000115",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "AE",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000116",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "AE",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000117",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "AE",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000118",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "AE",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000119",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "EN",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000120",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "EN",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000121",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "EN",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000122",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "EN",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000123",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "EN",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000124",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "EN",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000125",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SE",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000126",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SE",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000127",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SE",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000128",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SE",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000129",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SE",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000130",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SE",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000131",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SC",
+      "category": "PERFORMANCE_RESULTS",
+      "weight": 25
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000132",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SC",
+      "category": "ATTITUDE_SKILLS",
+      "weight": 20
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000133",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SC",
+      "category": "PROJECT_MANAGEMENT",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000134",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SC",
+      "category": "TECHNICAL_SOFTWARE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000135",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SC",
+      "category": "TECHNICAL_INFRASTRUCTURE",
+      "weight": 15
+    },
+    {
+      "uuid": "50000000-0000-0000-0000-000000000136",
+      "period_uuid": "40000000-0000-0000-0000-000000000004",
+      "position": "SC",
+      "category": "TECHNICAL_MAINTENANCE",
+      "weight": 10
+    }
+  ]
+}
