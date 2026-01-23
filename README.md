@@ -28,6 +28,16 @@
 docker compose up --build
 ```
 
+## Environment Variables (Backend)
+開発時は `backend/.env` を用意します。
+```
+cp backend/.env.example backend/.env
+```
+必須:
+- `DJANGO_SECRET_KEY`
+任意:
+- `DJANGO_DEBUG`（`True` or `False`。未設定は `False`）
+
 初回のみDBマイグレーションとサンプルデータ投入:
 ```
 docker compose exec web python manage.py migrate

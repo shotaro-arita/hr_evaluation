@@ -10,6 +10,7 @@ inject
 factory_boy
 Faker
 python-dateutil
+python-dotenv
 
 pytest
 pytest-django
