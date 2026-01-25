@@ -46,6 +46,9 @@ export const SheetDetailPanel = ({
   onOwnScoreChange,
   onManagerScoreChange,
 }: Props) => {
+  const isOwnCompleted = selectedSheet?.own_status === 'COMPLETED'
+  const isManagerCompleted = selectedSheet?.manager_status === 'COMPLETED'
+
   const renderScoreRow = (
     item: ScoreItem,
     draft: Record<string, string>,
@@ -190,12 +193,17 @@ export const SheetDetailPanel = ({
                     </Box>
                   </Tooltip>
                   <Stack spacing={1} alignItems="flex-end">
-                    {renderScoreRow(item, ownDraft, canEditOwn, onOwnScoreChange)}
+                    {renderScoreRow(
+                      item,
+                      ownDraft,
+                      canEditOwn && !isOwnCompleted,
+                      onOwnScoreChange
+                    )}
                     {managerItem ? (
                       renderScoreRow(
                         managerItem,
                         managerDraft,
-                        canEditManager,
+                        canEditManager && !isManagerCompleted,
                         onManagerScoreChange
                       )
                     ) : (
@@ -295,14 +303,14 @@ export const SheetDetailPanel = ({
                 <Stack direction="row" spacing={1}>
                   <Button
                     variant="outlined"
-                    disabled={loading}
+                    disabled={loading || isOwnCompleted}
                     onClick={onSaveOwnTemp}
                   >
                     下書き保存
                   </Button>
                   <Button
                     variant="contained"
-                    disabled={loading}
+                    disabled={loading || isOwnCompleted}
                     onClick={onSaveOwnFinal}
                   >
                     提出する
@@ -313,14 +321,14 @@ export const SheetDetailPanel = ({
                 <Stack direction="row" spacing={1}>
                   <Button
                     variant="outlined"
-                    disabled={loading}
+                    disabled={loading || isManagerCompleted}
                     onClick={onSaveManagerTemp}
                   >
                     下書き保存
                   </Button>
                   <Button
                     variant="contained"
-                    disabled={loading}
+                    disabled={loading || isManagerCompleted}
                     onClick={onSaveManagerFinal}
                   >
                     提出する
