@@ -72,6 +72,24 @@ class EvaluationSheetTest(MyAPITestCase):
             self.assertEqual(result.own_scores[0].score, 3)
             self.assertEqual(result.own_scores[1].score, 5)
 
+        with self.subTest("完了済みは下書きに更新できないこと"):
+            sheet_score_id = uuid4()
+            own_scores = [
+                EvaluationSheetScoreFactory(evaluation_item_uuid=sheet_score_id),
+            ]
+            entity = EvaluationSheetFactory(
+                own_scores=own_scores,
+                own_status=EvaluationSheetStatusEnum.COMPLETED,
+            )
+            score_dict = {sheet_score_id: 3}
+
+            with self.assertRaises(ValidationError) as e:
+                entity.save_temporary_own_score(score_dict)
+
+            self.assertEqual(
+                e.exception.detail, ["完了済みの自己評価は下書きに更新できません。"]
+            )
+
     def test_complete_own_score(self) -> None:
         with self.subTest("スコア未入力でエラーになること"):
             sheet_score_id = uuid4()
@@ -120,6 +138,24 @@ class EvaluationSheetTest(MyAPITestCase):
             )
             self.assertIsNone(result.manager_scores[0].score)
             self.assertEqual(result.manager_scores[1].score, 2)
+
+        with self.subTest("完了済みは下書きに更新できないこと"):
+            sheet_score_id = uuid4()
+            manager_scores = [
+                EvaluationSheetScoreFactory(evaluation_item_uuid=sheet_score_id),
+            ]
+            entity = EvaluationSheetFactory(
+                manager_scores=manager_scores,
+                manager_status=EvaluationSheetStatusEnum.COMPLETED,
+            )
+            score_dict = {sheet_score_id: 2}
+
+            with self.assertRaises(ValidationError) as e:
+                entity.save_temporary_manager_score(score_dict)
+
+            self.assertEqual(
+                e.exception.detail, ["完了済みの管理者評価は下書きに更新できません。"]
+            )
 
     def test_update_manager_score(self) -> None:
         with self.subTest("スコア未入力でエラーになること"):

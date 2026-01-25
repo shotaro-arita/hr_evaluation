@@ -96,7 +96,8 @@ class EvaluationSheet:
     def save_temporary_own_score(
         self, own_evaluation_score_dict: dict[UUID, int | None]
     ) -> "EvaluationSheet":
-        # TODO 評価ステータスの遷移
+        if self.own_status == EvaluationSheetStatusEnum.COMPLETED:
+            raise ValidationError("完了済みの自己評価は下書きに更新できません。")
         new_scores = self._update_sheet_score_from_dict(
             self.own_scores, own_evaluation_score_dict, True
         )
@@ -120,6 +121,8 @@ class EvaluationSheet:
         self, manager_evaluation_score_dict: dict[UUID, int | None]
     ) -> "EvaluationSheet":
         # TODO 自己評価前にも管理者は評価できる？
+        if self.manager_status == EvaluationSheetStatusEnum.COMPLETED:
+            raise ValidationError("完了済みの管理者評価は下書きに更新できません。")
         new_scores = self._update_sheet_score_from_dict(
             self.manager_scores, manager_evaluation_score_dict, True
         )
