@@ -221,8 +221,15 @@ function App() {
     void fetchTargetStatuses(targetIds)
   }, [token, user, targets, selectedPeriodId])
 
-  const targetOptions = useMemo(() => {
-    const options = targets.map((target) => ({
+  type TargetOption = {
+    employeeId: string
+    label: string
+    status: Pick<EvaluationSheet, 'own_status' | 'manager_status'> | null
+    isSelf?: true
+  }
+
+  const targetOptions = useMemo<TargetOption[]>(() => {
+    const options: TargetOption[] = targets.map((target) => ({
       employeeId: target.employee_uuid,
       label: `${target.employee_code} ${target.name}`,
       status: targetStatuses[target.employee_uuid] ?? null,
@@ -279,16 +286,16 @@ function App() {
                         <TargetSelectorPanel
                           targets={targetOptions}
                           selectedEmployeeId={selectedEmployeeId}
-                        helperText={
-                          targets.length === 0
-                            ? '管理者対象が登録されていません。'
-                            : `${targets.length}名の評価対象がいます。`
-                        }
-                        loading={targetStatusLoading}
-                        periods={periods}
-                        selectedPeriodId={selectedPeriodId}
-                        onPeriodChange={setSelectedPeriodId}
-                        onChange={setSelectedEmployeeId}
+                          helperText={
+                            targets.length === 0
+                              ? '管理者対象が登録されていません。'
+                              : `${targets.length}名の評価対象がいます。`
+                          }
+                          loading={targetStatusLoading}
+                          periods={periods}
+                          selectedPeriodId={selectedPeriodId}
+                          onPeriodChange={setSelectedPeriodId}
+                          onChange={setSelectedEmployeeId}
                       />
                     </Box>
                     ) : (
