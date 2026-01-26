@@ -1,5 +1,5 @@
-import type { FormEvent } from 'react'
 import { Button, Paper, Stack, TextField, Typography } from '@mui/material'
+import type { FormEvent } from 'react'
 
 type Props = {
   employeeCode: string
