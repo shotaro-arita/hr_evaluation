@@ -12,6 +12,12 @@ from evaluations.domain.evaluation_sheet.repository import EvaluationSheetReposi
 from evaluations.domain.employee.entity import Employee
 from evaluations.domain.evaluation_assignment.entity import EvaluationAssignment
 from evaluations.domain.employee.entity import PositionEnum
+from evaluations.domain.incomplete_sheet_report.entity import (
+    IncompleteSheetReport,
+)
+from evaluations.domain.incomplete_sheet_report.repository import (
+    IncompleteSheetReportRepository,
+)
 from evaluations.domain.user.entity import User
 
 
@@ -48,3 +54,8 @@ class EvaluationItemPositionRelationRepositoryMock(
 ):
     def find_item_ids_by_position(self, position: PositionEnum) -> list[UUID]:
         raise NotImplementedError
+
+
+class IncompleteSheetReportRepositoryMock(IncompleteSheetReportRepository):
+    def create(self, report: IncompleteSheetReport) -> IncompleteSheetReport:
+        return report

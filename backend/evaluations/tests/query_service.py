@@ -1,6 +1,7 @@
 from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationSheetQueryService,
     EvaluationSheetRawModel,
+    IncompleteSheetRowModel,
 )
 from evaluations.usecase.evaluation_assignment.query_service import (
     EvaluationAssignmentQueryService,
@@ -25,6 +26,11 @@ class EvaluationSheetQueryServiceMock(EvaluationSheetQueryService):
     def get_list_by_employee_id(
         self, user: User, employee_id: UUID
     ) -> list[EvaluationSheetRawModel]:
+        raise NotImplementedError
+
+    def get_incomplete_by_period(
+        self, user: User, period_id: UUID
+    ) -> list[IncompleteSheetRowModel]:
         raise NotImplementedError
 
 
