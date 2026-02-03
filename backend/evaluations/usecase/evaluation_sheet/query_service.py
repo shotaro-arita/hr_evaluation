@@ -58,6 +58,16 @@ class EvaluationSheetRawModel:
 
 
 @dataclass(frozen=True)
+class IncompleteSheetRowModel:
+    sheet_uuid: UUID
+    employee_uuid: UUID
+    employee_code: str
+    employee_name: str
+    own_status: EvaluationSheetStatusEnum
+    manager_status: EvaluationSheetStatusEnum
+
+
+@dataclass(frozen=True)
 class EvaluationSheetRetrieveModel:
     uuid: UUID
 
@@ -106,4 +116,10 @@ class EvaluationSheetQueryService(ABC):
         self, user: User, employee_id: UUID
     ) -> list[EvaluationSheetRawModel]:
         # TODO リスト用のリードモデル作成
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_incomplete_by_period(
+        self, user: User, period_id: UUID
+    ) -> list[IncompleteSheetRowModel]:
         raise NotImplementedError

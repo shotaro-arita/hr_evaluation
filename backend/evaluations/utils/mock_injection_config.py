@@ -11,11 +11,15 @@ from evaluations.domain.evaluation_item_position_relation.repository import (
 from evaluations.domain.evaluation_sheet.repository import (
     EvaluationSheetRepository,
 )
+from evaluations.domain.incomplete_sheet_report.repository import (
+    IncompleteSheetReportRepository,
+)
 from evaluations.tests.repository import (
     EmployeeRepositoryMock,
     EvaluationAssignmentRepositoryMock,
     EvaluationItemPositionRelationRepositoryMock,
     EvaluationSheetRepositoryMock,
+    IncompleteSheetReportRepositoryMock,
 )
 from evaluations.tests.query_service import (
     EvaluationAssignmentQueryServiceMock,
@@ -45,6 +49,9 @@ def mock_injection_config(binder: Binder) -> None:
     binder.bind(
         EvaluationItemPositionRelationRepository,
         EvaluationItemPositionRelationRepositoryMock,
+    )
+    binder.bind(
+        IncompleteSheetReportRepository, IncompleteSheetReportRepositoryMock
     )
 
     # query_service

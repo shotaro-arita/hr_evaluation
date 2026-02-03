@@ -23,6 +23,9 @@ from evaluations.infrastructure.repository.evaluation_item_position_relation imp
 from evaluations.infrastructure.repository.evaluation_sheet import (
     EvaluationSheetRepositoryImpl,
 )
+from evaluations.infrastructure.repository.incomplete_sheet_report import (
+    IncompleteSheetReportRepositoryImpl,
+)
 from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationSheetQueryService,
 )
@@ -44,6 +47,9 @@ from evaluations.domain.evaluation_item_position_relation.repository import (
     EvaluationItemPositionRelationRepository,
 )
 from evaluations.domain.evaluation_sheet.repository import EvaluationSheetRepository
+from evaluations.domain.incomplete_sheet_report.repository import (
+    IncompleteSheetReportRepository,
+)
 
 
 def injection_config(binder: Binder) -> None:
@@ -54,6 +60,9 @@ def injection_config(binder: Binder) -> None:
     binder.bind(
         EvaluationItemPositionRelationRepository,
         EvaluationItemPositionRelationRepositoryImpl(),
+    )
+    binder.bind(
+        IncompleteSheetReportRepository, IncompleteSheetReportRepositoryImpl()
     )
 
     # QueryService

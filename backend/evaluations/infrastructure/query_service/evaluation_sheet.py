@@ -8,6 +8,7 @@ from evaluations.usecase.evaluation_sheet.query_service import (
     EvaluationScoreRetrieveModel,
     EvaluationSheetQueryService,
     EvaluationSheetRawModel,
+    IncompleteSheetRowModel,
 )
 from evaluations.domain.user.entity import User
 
@@ -86,3 +87,30 @@ class EvaluationSheetQueryServiceImpl(EvaluationSheetQueryService):
             created_at=sheet_model.created_at,
             updated_at=sheet_model.updated_at,
         )
+
+    def get_incomplete_by_period(
+        self, user: User, period_id: UUID
+    ) -> list[IncompleteSheetRowModel]:
+        sheet_models = (
+            DbEvaluationSheet.objects.select_related("employee")
+            .filter(period_id=period_id)
+            .exclude(
+                own_status=EvaluationSheetStatusEnum.COMPLETED.value,
+                manager_status=EvaluationSheetStatusEnum.COMPLETED.value,
+            )
+        )
+        results = []
+        for sheet_model in sheet_models:
+            results.append(
+                IncompleteSheetRowModel(
+                    sheet_uuid=sheet_model.uuid,
+                    employee_uuid=sheet_model.employee_id,
+                    employee_code=sheet_model.employee.employee_code,
+                    employee_name=sheet_model.employee.name,
+                    own_status=EvaluationSheetStatusEnum(sheet_model.own_status),
+                    manager_status=EvaluationSheetStatusEnum(
+                        sheet_model.manager_status
+                    ),
+                )
+            )
+        return results
