@@ -11,6 +11,8 @@ factory_boy
 Faker
 python-dateutil
 python-dotenv
+celery
+redis
 
 pytest
 pytest-django

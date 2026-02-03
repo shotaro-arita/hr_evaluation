@@ -15,6 +15,7 @@ from datetime import timedelta
 import os
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
+from celery.schedules import crontab
 from dotenv import load_dotenv
 
 
@@ -143,4 +144,23 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "USER_ID_FIELD": "uuid",
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+}
+
+# Celery
+CELERY_BROKER_URL = os.environ.get(
+    "CELERY_BROKER_URL", "redis://redis:6379/0"
+)
+CELERY_RESULT_BACKEND = os.environ.get(
+    "CELERY_RESULT_BACKEND", "redis://redis:6379/1"
+)
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_BEAT_SCHEDULE = {
+    "nightly-incomplete-sheets": {
+        "task": "evaluations.tasks.generate_incomplete_sheet_report",
+        "schedule": crontab(hour=2, minute=0),
+    }
 }
