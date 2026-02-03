@@ -1,11 +1,11 @@
 import { Box, Button, Stack } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import type { ManagerTarget } from '../../evaluation-assignments/types'
+import type { User } from '../../users/types'
 import { getSheet, updateSheet } from '../api'
 import { SheetDetailPanel } from '../components/SheetDetailPanel'
-import type { ManagerTarget } from '../../evaluation-assignments/types'
-import type { ScoreItem, EvaluationSheet } from '../types'
-import type { User } from '../../users/types'
+import type { EvaluationSheet, ScoreItem } from '../types'
 
 type Props = {
   token: string
